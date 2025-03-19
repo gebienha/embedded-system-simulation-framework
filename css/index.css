@@ -1,9 +1,22 @@
+html, body {
+    height: 100%;
+    overflow-y: auto;
+    min-height: 100vh;
+}
+
 body {
-    height: 100vh;
+    height: 200vh;
     width: max-content;
     margin: auto !important;
     display: grid;
-    grid-template-areas: "toolbar toolbar toolbar toolbar" "reg text text data" "reg text text data" "reg text text gap3" "reg text text stack" "reg gap2 gap2 stack" "reg output log stack";
+    grid-template-areas: 
+        "toolbar toolbar toolbar toolbar" 
+        "reg text text data" 
+        "reg text text data" 
+        "reg gap1 gap1 gap3" 
+        "reg editor editor stack" 
+        "reg gap2 gap2 stack" 
+        "reg output log stack";
     grid-template-rows: min-content 1fr 1fr 10px 1fr 10px min-content;
     grid-template-columns: 16rem 26rem 26rem 36rem;
     grid-column-gap: 10px;
@@ -46,9 +59,7 @@ pre {
     grid-area: reg;
 }
 
-
 /* for long binary values */
-
 #regs-panel pre {
     margin-left: 1rem;
     white-space: pre-wrap;
@@ -56,6 +67,8 @@ pre {
 
 #text-panel {
     grid-area: text;
+    max-height: 400px;
+    margin-bottom: 0;
 }
 
 #text-panel pre {
@@ -81,6 +94,20 @@ pre {
     max-height: 100%;
     overflow: auto;
     margin-bottom: 0;
+}
+
+/* New CSS for the CodeMirror editor */
+#editor-panel {
+    grid-area: editor;
+    width: 100%;
+    overflow: auto;
+    height: 450px;
+}
+
+/* Make sure the CodeMirror instance takes up the full available space */
+.CodeMirror {
+    height: 100% !important;
+    width: 100% !important;
 }
 
 #output-panel {

@@ -13,7 +13,15 @@
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <link rel="stylesheet" type="text/css" href="css/xcode.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/eclipse.min.css">
+    
     <title>JsSpim - Online MIPS32 Simulator Based on Spim</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/mips/mips.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/selection/active-line.min.js"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51728620-4"></script>
@@ -28,6 +36,15 @@
         gtag('config', 'UA-51728620-4');
     </script>
 
+    <style>
+        body {
+            overflow-y: scroll;
+        }
+        #editor {
+            height: 300px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
 
@@ -139,6 +156,64 @@
         </div>
     </div>
 </div>
+
+<div id="editor-panel" class="card">
+    <div class="card-header">
+        <h5 class="float-left">Editor</h5>
+        <div class="float-right">
+            <button id="assemble-button" class="btn btn-primary btn-sm">Assemble</button>
+            <button id="save-button" class="btn btn-primary btn-sm">Save</button>
+        </div>
+    </div>
+    <div class="card-body">
+         <!-- Added input for file name -->
+        <div class="form-group">
+            <label for="filename-input">File Name:</label>
+            <input type="text" id="filename-input" class="form-control" placeholder="Enter file name" />
+        </div>
+
+        <script>
+            const editor = CodeMirror(document.querySelector("#editor-panel .card-body"), {
+                mode: 'mips',
+                lineNumbers: true,
+                matchBrackets: true,
+                styleActiveLine: true,
+                theme: 'eclipse',
+            });
+        
+             // Add event listener for the assemble button
+             document.getElementById('assemble-button').addEventListener('click', function() {
+                // Get the code from the editor
+                const code = editor.getValue();
+                
+                // Get the file name from the input field
+                const filename = document.getElementById('filename-input').value; // Default name if not entered
+
+                // Create a file object (similar to what the file uploader would create)
+                const file = new File([code], filename, {
+                    type: "text/plain",
+                });
+                
+                // Call the main function with this file to process it
+                // This assumes your main() function handles file uploads
+                main(file);
+                
+                // Log action for debugging
+                console.log('Code assembled and saved to input.s');
+            });
+
+            // Add event listener for the assemble button
+            document.getElementById('save-button').addEventListener('click', function() {
+                // Get the file name from the input field
+                const filename = document.getElementById('filename-input').value; // Default name if not entered
+                saveFile(filename)
+                // Log action for debugging
+                console.log('Code assembled and saved');
+            });
+        </script>
+    </div>
+</div>
+
 
 <div id="data-panel" class="card">
     <div class="card-header">
