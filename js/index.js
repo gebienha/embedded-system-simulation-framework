@@ -63,13 +63,12 @@ async function main(fileInput = null) {
 
         Execution.init();
 
-        // If the fileInput is not a File object, load it into the editor
-        if (!(fileInput instanceof File)) {
-            const textDecoder = new TextDecoder();
-            const fileContent = textDecoder.decode(data);
-            editor.setValue(fileContent);
-        }
-        editor.setValue(data);
+        const textDecoder = new TextDecoder();
+        const fileContent = textDecoder.decode(data);
+        editor.setValue(fileContent);
+
+        const filename = typeof fileInput === 'string' ? fileInput.split('/').pop() : fileInput.name;
+        document.getElementById('filename-input').value = filename;
     }
 }
 
@@ -98,22 +97,19 @@ async function saveFile(filename) {
 }
 
 async function loadData(fileInput) {
-    if (fileInput instanceof File) { // Local file
+    if (fileInput instanceof File) { // local file
         const reader = new FileReader();
         return new Promise((resolve) => {
-            reader.onload = () => {
-                // Resolve the content as a string (text)
-                resolve(reader.result);
-            };
-            reader.readAsText(fileInput); // Read file content as text
+            reader.onload = () => resolve(reader.result);
+            reader.readAsArrayBuffer(fileInput);
+            
         });
-    } else { // Remote file
+    } else { // remote file
         const response = await fetch(fileInput);
-        const data = await response.text(); // Fetch and convert to text
-        return data;
+        return response.arrayBuffer();
     }
-}
 
+}
 
 // Add this function to handle the assemble button click
 function assembleCode() {
@@ -149,6 +145,8 @@ document.getElementById('file-input').addEventListener('change', function(event)
             const textDecoder = new TextDecoder();
             const fileContent = textDecoder.decode(data);
             editor.setValue(fileContent); // Display content in the editor
+       
+            document.getElementById('filename-input').value = fileInput.name;
         });
     }
 });
@@ -166,6 +164,15 @@ document.getElementById('file-selector').addEventListener('change', function(eve
 // Initialize the program
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize with an empty input.s
+    // Initialize the editor (assuming you're using something like CodeMirror or Ace)
+    console.log('Initializing editor...');
+    editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+        lineNumbers: true,
+        mode: "text/x-asm",
+    });
+    
+    console.log('Editor initialized:', editor);
+    
     main();
 
     // Initialize the assemble button functionality
