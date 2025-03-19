@@ -169,7 +169,10 @@
          <!-- Added input for file name -->
         <div class="form-group">
             <label for="filename-input">File Name:</label>
-            <input type="text" id="filename-input" class="form-control" placeholder="Enter file name" />
+            <div class="d-flex align-items-center">
+                <input type="text" id="filename-input" class="form-control" placeholder="Enter file name" />
+                <span id="current-filename" </span>
+            </div>
         </div>
 
         <script>
@@ -180,6 +183,12 @@
                 styleActiveLine: true,
                 theme: 'eclipse',
             });
+
+            // Update the current file name display beside the input
+            function updateCurrentFileName(filename) {
+                const currentFileNameElement = document.getElementById('current-filename');
+                currentFileNameElement.textContent = `Current File: ${filename}`;
+            }
         
              // Add event listener for the assemble button
              document.getElementById('assemble-button').addEventListener('click', function() {
