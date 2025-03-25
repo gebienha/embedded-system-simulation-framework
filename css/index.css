@@ -17,7 +17,7 @@ body {
         "reg editor editor stack" 
         "reg gap2 gap2 stack" 
         "reg output log stack";
-    grid-template-rows: min-content 1fr 1fr 10px 1fr 10px min-content;
+    grid-template-rows: min-content min-content min-content 10px min-content 10px min-content;
     grid-template-columns: 16rem 26rem 26rem 36rem;
     grid-column-gap: 10px;
     padding-bottom: 10px;
@@ -57,6 +57,7 @@ pre {
 
 #regs-panel {
     grid-area: reg;
+    max-height: 1300px
 }
 
 /* for long binary values */
@@ -67,7 +68,7 @@ pre {
 
 #text-panel {
     grid-area: text;
-    max-height: 400px;
+    max-height: 600px;
     margin-bottom: 0;
 }
 
@@ -78,6 +79,7 @@ pre {
 
 #data-panel {
     grid-area: data;
+    max-height: 600px
 }
 
 #stack-panel {
@@ -101,7 +103,7 @@ pre {
     grid-area: editor;
     width: 100%;
     overflow: auto;
-    height: 450px;
+    max-height: 500px;
 }
 
 /* Make sure the CodeMirror instance takes up the full available space */
