@@ -85,8 +85,36 @@
         </div>
     </div>
 
-
     <div class="card-body">
+        <!-- Add Tabs -->
+        <ul class="nav nav-tabs" id="regs-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" id="int-regs-tab" href="#" onclick="showRegsTab('int')">Int Regs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="fp-regs-tab" href="#" onclick="showRegsTab('fp')">FP Regs</a>
+            </li>
+        </ul>
+    
+        <div id="int-regs-content" class="tab-content">
+            <h6>Special Registers</h6>
+            <pre id="special-int-regs" class="reg-lines"></pre>
+            <h6>General Registers</h6>
+            <pre id="general-regs" class="reg-lines"></pre>
+        </div>
+
+        <div id="fp-regs-content" class="tab-content" style="display:none;">
+            <h6>Special Float Registers</h6>
+            <pre id="special-float-regs" class="reg-lines"></pre>
+            <h6>Single Precision</h6>
+            <pre id="float-regs" class="reg-lines"></pre>
+            <h6>Double Precision</h6>
+            <pre id="double-regs" class="reg-lines"></pre>
+        </div>
+    </div>
+</div>
+
+    <!-- <div class="card-body">
         <h6>Special Registers</h6>
         <pre id="special-int-regs" class="reg-lines"></pre>
         <h6>General Registers</h6>
@@ -98,27 +126,27 @@
         <h6>Double Precision</h6>
         <pre id="double-regs" class="reg-lines"></pre>
     </div>
-</div>
+</div> -->
+
+
 
 <div id="text-panel" class="card">
     <div class="card-header">
         <h5 class="float-left">Text Segment</h5>
-        <div class="float-right">
-            <input id="toggle-kernel-text" type="checkbox" checked
-                   onchange="InstructionUtils.toggleKernelText(this.checked)">
-            <label for="toggle-kernel-text"> Kernel text </label>
-
-            &nbsp
-
-            <input id="toggle-instruction-value" type="checkbox"
-                   onchange="InstructionUtils.toggleBinary(this.checked)">
-            <label for="toggle-instruction-value"> Instruction value </label>
-
-            &nbsp
-
-            <input id="toggle-comment" type="checkbox" checked
-                   onchange="InstructionUtils.toggleSourceCode(this.checked)">
-            <label for="toggle-comment"> Source code </label>
+        <div class="form-inline float-right" id="execution-fieldset">
+            <div class="form-group">
+                <label for="speed-selector" class="col-form-label">Execution speed: &nbsp</label>
+                <div>
+                    <input type="range" id="speed-selector" class="custom-range" value="90" max="100"
+                           oninput="Execution.setSpeed(this.value)">
+                </div>
+            </div>
+            &nbsp&nbsp&nbsp
+            <div>
+                <button id="play-button" class="btn btn-primary btn-sm" style="width: 5rem;">Play</button>
+                <button id="step-button" class="btn btn-success btn-sm" style="width: 4rem;">Step</button>
+                <button id="reset-button" class="btn btn-danger btn-sm" style="width: 4rem;">Reset</button>
+            </div>
         </div>
     </div>
 
@@ -135,22 +163,23 @@
 
 
     <div class="card-footer">
-        <div class="form-inline float-left" id="execution-fieldset">
-            <div class="form-group">
-                <label for="speed-selector" class="col-form-label">Execution speed: &nbsp</label>
-                <div>
-                    <input type="range" id="speed-selector" class="custom-range" value="90" max="100"
-                           oninput="Execution.setSpeed(this.value)">
-                </div>
-            </div>
-            &nbsp&nbsp&nbsp
-            <div>
-                <button id="play-button" class="btn btn-primary btn-sm" style="width: 5rem;">Play</button>
-                <button id="step-button" class="btn btn-success btn-sm" style="width: 4rem;">Step</button>
-                <button id="reset-button" class="btn btn-danger btn-sm" style="width: 4rem;">Reset</button>
-            </div>
-        </div>
+        <div class="float-left">
+            <input id="toggle-kernel-text" type="checkbox" checked
+                   onchange="InstructionUtils.toggleKernelText(this.checked)">
+            <label for="toggle-kernel-text"> Kernel text </label>
 
+            &nbsp
+
+            <input id="toggle-instruction-value" type="checkbox"
+                   onchange="InstructionUtils.toggleBinary(this.checked)">
+            <label for="toggle-instruction-value"> Instruction value </label>
+
+            &nbsp
+
+            <input id="toggle-comment" type="checkbox" checked
+                   onchange="InstructionUtils.toggleSourceCode(this.checked)">
+            <label for="toggle-comment"> Source code </label>
+        </div>
         <div class="text-muted float-right col-form-label">
             Click line to toggle breakpoint
         </div>
