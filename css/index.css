@@ -11,11 +11,11 @@ body {
     display: grid;
     grid-template-areas: 
         "toolbar toolbar toolbar toolbar" 
+        "reg editor editor data" 
+        "reg editor editor data" 
+        "reg gap1 gap1 data" 
         "reg text text data" 
-        "reg text text data" 
-        "reg gap1 gap1 gap3" 
-        "reg editor editor stack" 
-        "reg gap2 gap2 stack" 
+        "reg gap2 gap2 gap3" 
         "reg output log stack";
     grid-template-rows: min-content min-content min-content 10px min-content 10px min-content;
     grid-template-columns: 16rem 26rem 26rem 36rem;
@@ -57,7 +57,7 @@ pre {
 
 #regs-panel {
     grid-area: reg;
-    max-height: 1300px
+    max-height: 1110px
 }
 
 /* for long binary values */
@@ -68,7 +68,7 @@ pre {
 
 #text-panel {
     grid-area: text;
-    max-height: 600px;
+    max-height: 400px;
     margin-bottom: 0;
 }
 
@@ -79,11 +79,12 @@ pre {
 
 #data-panel {
     grid-area: data;
-    max-height: 600px
+    max-height: 810px
 }
 
 #stack-panel {
     grid-area: stack;
+    height: 290px
 }
 
 #stack-wrapper {
@@ -103,7 +104,7 @@ pre {
     grid-area: editor;
     width: 100%;
     overflow: auto;
-    max-height: 500px;
+    max-height: 400px;
 }
 
 /* Make sure the CodeMirror instance takes up the full available space */
@@ -141,4 +142,13 @@ pre {
 
 .unused {
     color: gainsboro;
+}
+
+.nav-tabs .nav-link {
+    cursor: pointer;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #007bff;
+    color: white;
 }

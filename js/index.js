@@ -185,3 +185,42 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('save-button').addEventListener('click', saveFile);
     }
 });
+
+function showRegsTab(tab) {
+    // Hide all tabs
+    document.getElementById("int-regs-content").style.display = "none";
+    document.getElementById("fp-regs-content").style.display = "none";
+
+    // Remove active class from both tabs
+    document.getElementById("int-regs-tab").classList.remove("active");
+    document.getElementById("fp-regs-tab").classList.remove("active");
+
+    // Show selected tab content and add active class to selected tab
+    if (tab === "int") {
+        document.getElementById("int-regs-content").style.display = "block";
+        document.getElementById("int-regs-tab").classList.add("active");
+    } else if (tab === "fp") {
+        document.getElementById("fp-regs-content").style.display = "block";
+        document.getElementById("fp-regs-tab").classList.add("active");
+    }
+}
+
+// Function to show the corresponding tab content
+function showMemoryTab(tab) {
+    const dataTab = document.getElementById('data-segment-content');
+    const stackTab = document.getElementById('stack-content');
+    const dataTabLink = document.getElementById('data-segment-tab');
+    const stackTabLink = document.getElementById('user-stack-tab');
+    
+    if (tab === 'data') {
+        dataTab.style.display = 'block';
+        stackTab.style.display = 'none';
+        dataTabLink.classList.add('active');
+        stackTabLink.classList.remove('active');
+    } else {
+        dataTab.style.display = 'none';
+        stackTab.style.display = 'block';
+        stackTabLink.classList.add('active');
+        dataTabLink.classList.remove('active');
+    }
+}
