@@ -16,8 +16,9 @@ body {
         "reg gap1 gap1 data" 
         "reg text text data" 
         "reg gap2 gap2 gap3" 
-        "reg output log stack";
-    grid-template-rows: min-content min-content min-content 10px min-content 10px min-content;
+        "reg output log stack"
+        ". led-display led-display led-display";
+    grid-template-rows: min-content min-content min-content 10px min-content 10px min-content 200px;
     grid-template-columns: 16rem 26rem 26rem 36rem;
     grid-column-gap: 10px;
     padding-bottom: 10px;
@@ -151,4 +152,33 @@ pre {
 .nav-tabs .nav-link.active {
     background-color: #007bff;
     color: white;
+}
+
+/* Add LED display panel styles */
+#led-display-panel {
+    grid-area: led-display;
+    margin: 20px 0;
+    padding: 10px;
+}
+
+#led-display {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 10px;
+    padding: 20px;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+}
+
+.led {
+    width: 20px;
+    height: 20px;
+    background-color: #300000;
+    border-radius: 50%;
+    transition: all 0.1s ease;
+    border: 1px solid #444;
+}
+
+.led:hover {
+    transform: scale(1.1);
 }

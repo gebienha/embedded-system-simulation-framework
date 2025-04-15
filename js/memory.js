@@ -13,6 +13,7 @@ class MemoryUtils {
         this.userData.update();
         this.kernelData.update();
         this.stack.update();
+        this.updateLEDDisplay(); // Update the LED display
     }
 
     static changeStackRadix(radixStr) {
@@ -31,6 +32,27 @@ class MemoryUtils {
             Elements.kernelDataContainer.style.display = null;
         else
             Elements.kernelDataContainer.style.display = 'none';
+    }
+
+    static readLEDState(index) {
+        const address = LED_BASE_ADDRESS + (index * 4); // Each LED uses 4 bytes
+        return this.getContent(address) !== 0;
+    }
+
+    static writeLEDState(index, value) {
+        const address = LED_BASE_ADDRESS + (index * 4);
+        this.setContent(address, value ? 1 : 0);
+        this.updateLEDDisplay();
+    }
+
+    static updateLEDDisplay() {
+        const ledContainer = document.getElementById('led-display');
+        for (let i = 0; i < NUM_LEDS; i++) {
+            const led = ledContainer.children[i];
+            const isOn = this.readLEDState(i);
+            led.style.backgroundColor = isOn ? '#ff0000' : '#300000';
+            led.style.boxShadow = isOn ? '0 0 10px #ff0000' : 'none';
+        }
     }
 }
 
@@ -91,6 +113,15 @@ class Memory {
      */
     getContent(address) {
         return 0;
+    }
+
+    /**
+     * Set content to a certain memory address
+     * @param address a memory address
+     * @param value the value to set
+     */
+    setContent(address, value) {
+        // Implementation for setting memory content
     }
 }
 
@@ -176,5 +207,17 @@ class Stack extends Memory {
             this.lines.push(newLine);
         }
         this.minLineAddress = RegisterUtils.getSP() & 0xfffffff0;
+    }
+}
+
+function renderLEDDisplay() {
+    const ledContainer = document.getElementById('led-display');
+    ledContainer.innerHTML = ''; // Clear previous state
+
+    for (let i = 0; i < 256; i++) {
+        const led = document.createElement('div');
+        led.className = 'led';
+        led.style.backgroundColor = MemoryUtils.readLEDState(i) ? 'red' : 'black';
+        ledContainer.appendChild(led);
     }
 }
