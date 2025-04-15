@@ -37,6 +37,7 @@
 #include "inst.h"
 #include "reg.h"
 #include "mem.h"
+#include "led_display.cpp"
 
 /* Exported Variables: */
 
@@ -330,6 +331,11 @@ read_mem_inst(mem_addr addr)
 reg_word
 read_mem_byte(mem_addr addr)
 {
+  if (addr >= 0xB0000000 && addr < 0xB0000100)
+    {
+      // Handle LED display memory-mapped I/O
+      return get_led_display_state(addr);
+    }
   if ((addr >= DATA_BOT) && (addr < data_top))
     return data_seg_b [addr - DATA_BOT];
   else if ((addr >= stack_bot) && (addr < STACK_TOP))
@@ -385,6 +391,12 @@ set_mem_inst(mem_addr addr, instruction* inst)
 void
 set_mem_byte(mem_addr addr, reg_word value)
 {
+  if (addr >= 0xB0000000 && addr < 0xB0000100)
+    {
+      // Handle LED display memory-mapped I/O
+      update_led_display(addr, value);
+      return;
+    }
   data_modified = true;
   if ((addr >= DATA_BOT) && (addr < data_top))
     data_seg_b [addr - DATA_BOT] = (BYTE_TYPE) value;
