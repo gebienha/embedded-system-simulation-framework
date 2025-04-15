@@ -132,6 +132,26 @@ pre {
     margin: 0;
 }
 
+.seven-segment {
+    display: flex;
+    flex-direction: column;
+    width: 40px;
+    height: 60px;
+    margin: 10px;
+    position: relative;
+}
+.segment-a, .segment-b, .segment-c, .segment-d, .segment-e, .segment-f, .segment-g {
+    position: absolute;
+    background-color: #ddd;
+    opacity: 0.2;
+}
+.segment-a.on, .segment-b.on, .segment-c.on, .segment-d.on, .segment-e.on, .segment-f.on, .segment-g.on {
+    background-color: red;
+    opacity: 1;
+}
+/* Add positioning and sizes for each segment as needed */
+
+
 .data-number {
     color: #1c00cf;
 }

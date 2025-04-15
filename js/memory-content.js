@@ -56,6 +56,12 @@ class MemoryWord {
 
 
         this.value = newValue;
+        if (this.address === 0xFFFF0010) {
+            SevenSegmentDisplay.updateRight(newValue);
+        } else if (this.address === 0xFFFF0011) {
+            SevenSegmentDisplay.updateLeft(newValue);
+        }
+
         this.valueElement.innerText = this.getValueInnerText();
         this.stringElement.innerText = this.getStringInnerText();
     }
