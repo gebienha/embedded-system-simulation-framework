@@ -1,18 +1,24 @@
+const LED_BASE_ADDRESS = 0xFFFF0090;
+const LED_STATE = new Uint8Array(1);
+
 class MemoryUtils {
     static init() {
         this.userData = new UserData();
         this.kernelData = new KernelData();
         this.stack = new Stack();
+        this.ledSegment = new LEDSegment();
 
         this.userData.initialize();
         this.kernelData.initialize();
         this.stack.initialize();
+        this.ledSegment.initialize();
     }
 
     static update() {
         this.userData.update();
         this.kernelData.update();
         this.stack.update();
+        this.ledSegment.update();
     }
 
     static changeStackRadix(radixStr) {
@@ -40,6 +46,7 @@ class Memory {
         this.lines = [];
         this.content = undefined;
         this.element = undefined;
+        this.mmioAddresses = new Set([LED_BASE_ADDRESS]); // Add memory-mapped I/O addresses
     }
 
     /**
@@ -85,12 +92,43 @@ class Memory {
     }
 
     /**
+     * Check if the address is a memory-mapped I/O address
+     * @param address a memory address
+     * @returns {boolean} whether the address is MMIO
+     */
+    isMMIOAddress(address) {
+        return this.mmioAddresses.has(address);
+    }
+
+    /**
      * Get content from a certain memory address
      * @param address a memory address
      * @returns {number} the content in the address in int32
      */
     getContent(address) {
+        if (this.isMMIOAddress(address)) {
+            if (address === LED_BASE_ADDRESS) {
+                return LED_STATE[0];
+            }
+        }
         return 0;
+    }
+
+    /**
+     * Set content to a certain memory address
+     * @param address a memory address
+     * @param value the value to set
+     * @returns {boolean} whether the operation was successful
+     */
+    setContent(address, value) {
+        if (address === LED_BASE_ADDRESS) {
+            LED_STATE[0] = value & 0xFF;
+            if (MemoryUtils.ledSegment) {
+                MemoryUtils.ledSegment.updateLEDDisplay();
+            }
+            return true; // Indicate that the write was handled
+        }
+        return false; // Not handled here
     }
 }
 
@@ -185,5 +223,54 @@ class Stack extends Memory {
             this.lines.push(newLine);
         }
         this.minLineAddress = RegisterUtils.getSP() & 0xfffffff0;
+    }
+}
+
+class LEDSegment extends Memory {
+    constructor() {
+        super();
+        this.element = document.getElementById('led-display');
+    }
+
+    updateLEDDisplay() {
+        if (!this.element) {
+            console.error('LED display element not found!');
+            return;
+        }
+
+        const value = LED_STATE[0];
+        console.log('LED value:', value.toString(2).padStart(8, '0')); // Debug output
+
+        // Update each LED
+        for (let i = 0; i < 8; i++) {
+            const led = this.element.querySelector(`#led${i}`);
+            if (led) {
+                const isOn = (value & (1 << i)) !== 0;
+                led.classList.toggle('led-on', isOn);
+            }
+        }
+    }
+
+    update() {
+        this.updateLEDDisplay();
+    }
+
+    initialize() {
+        if (!this.element) {
+            console.error('LED display container not found!');
+            return;
+        }
+        
+        // Clear and recreate LED elements
+        this.element.innerHTML = '';
+        for (let i = 7; i >= 0; i--) {
+            const led = document.createElement('div');
+            led.id = `led${i}`;
+            led.className = 'led';
+            this.element.appendChild(led);
+        }
+        
+        LED_STATE[0] = 0;
+        this.updateLEDDisplay();
     }
 }

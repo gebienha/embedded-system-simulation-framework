@@ -270,12 +270,36 @@ pre {
     color: white;
 }
 
-/* .segment-a,
-.segment-b,
-.segment-c,
-.segment-d,
-.segment-e,
-.segment-f,
-.segment-g {
-  background-color: red !important;
-} */
+/* Add LED display panel styles */
+#led-display-panel {
+    grid-area: led-display;
+    margin: 20px 0;
+    padding: 10px;
+}
+
+#led-display {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.led {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #333333;
+    transition: all 0.2s ease;
+}
+
+.led.led-on {
+    background-color: #f00;  /* Red when on */
+    box-shadow: 0 0 10px #f00;
+}
+
+.led:hover {
+    transform: scale(1.1);
+}
