@@ -1,27 +1,130 @@
 const SevenSegmentDisplay = {
-    segmentMap: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
+    // Define standard segment patterns for hex values
+    patterns: {
+        0x00: [0,0,0,0,0,0,0], // blank
+        0x3F: [1,1,1,1,1,1,0], // 0
+        0x06: [0,1,1,0,0,0,0], // 1
+        0x5B: [1,1,0,1,1,0,1], // 2
+        0x4F: [1,1,1,1,0,0,1], // 3
+        0x66: [0,1,1,0,0,1,1], // 4
+        0x6D: [1,0,1,1,0,1,1], // 5
+        0x7D: [1,0,1,1,1,1,1], // 6
+        0x07: [1,1,1,0,0,0,0], // 7
+        0x7F: [1,1,1,1,1,1,1], // 8
+        0x6F: [1,1,1,1,0,1,1], // 9
+        0x77: [1,1,1,0,1,1,1], // A
+        0x7C: [0,0,1,1,1,1,1], // b
+        0x39: [1,0,0,1,1,1,0], // C
+        0x5E: [0,1,1,1,1,0,1], // d
+        0x79: [1,0,0,1,1,1,1], // E
+        0x71: [1,0,0,0,1,1,1]  // F
+    },
 
-    update(displayElementId, value) {
-        const binary = value.toString(2).padStart(8, '0');
-        const display = document.getElementById(displayElementId);
+    updateLeft(value) {
+        console.log("updateLeft called with value:", value, "hex:", value.toString(16));
+        this._updateDisplay('digit-left', value);
+    },
 
-        this.segmentMap.forEach((seg, i) => {
+    updateMidLeft(value) {
+        console.log("updateMidLeft called with value:", value, "hex:", value.toString(16));
+        this._updateDisplay('digit-mid-left', value);
+    },
+
+    updateMidRight(value) {
+        console.log("updateMidRight called with value:", value, "hex:", value.toString(16));
+        this._updateDisplay('digit-mid-right', value);
+    },
+
+    updateRight(value) {
+        console.log("updateRight called with value:", value, "hex:", value.toString(16));
+        this._updateDisplay('digit-right', value);
+    },
+
+    _updateDisplay(displayClass, value) {
+        // Get the display element
+        const display = document.querySelector(`.${displayClass}`);
+        if (!display) {
+            console.error(`Display element .${displayClass} not found!`);
+            return;
+        }
+        
+        // Get pattern for this value or use blank if not found
+        const byteValue = value & 0xFF;
+        const pattern = this.patterns[byteValue] || this.patterns[0x00];
+        
+        console.log(`Updating ${displayClass} with pattern:`, pattern.join(','));
+        
+        // Update each segment
+        const segments = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+        segments.forEach((seg, i) => {
             const segment = display.querySelector(`.segment-${seg}`);
             if (segment) {
-                if (binary[6 - i] === '1') {
+                if (pattern[i] === 1) {
                     segment.classList.add('on');
                 } else {
                     segment.classList.remove('on');
                 }
+            } else {
+                console.error(`Segment .segment-${seg} not found in ${displayClass}`);
             }
         });
     },
 
-    updateRight(value) {
-        this.update('seven-segment-right', value);
+    updateAll(values) {
+        console.log("updateAll called with values:", values);
+        if (values.length !== 4) {
+            console.error("Expected 4 values for updateAll");
+            return;
+        }
+        
+        this.updateLeft(values[0]);
+        this.updateMidLeft(values[1]);
+        this.updateMidRight(values[2]);
+        this.updateRight(values[3]);
     },
 
-    updateLeft(value) {
-        this.update('seven-segment-left', value);
+    // updateAll(values) {
+    //     console.log("updateAll called with values:", values);
+    //     if (values.length !== 4) {
+    //         console.error("Expected 4 values for updateAll");
+    //         return;
+    //     }
+        
+    //     // Update each segment display with the provided values
+    //     this.updateLeft(values[0]);
+    //     this.updateMidLeft(values[1]);
+    //     this.updateMidRight(values[2]);
+    //     this.updateRight(values[3]);
+    
+    //     // After a delay, reset the display
+    //     setTimeout(() => {
+    //         this.updateAll([0, 0, 0, 0]);  // Clear the display
+    //         console.log("Displays cleared");
+    //     }, 2000);  // Wait for 2 seconds before clearing
+    // },
+    
+    
+    init() {
+        console.log("Initializing Seven Segment Display");
+        
+        console.log("Seven Segment Display initialized with test pattern");
+        
+        // After 2 seconds, clear displays
+        setTimeout(() => {
+            this.updateAll([0, 0, 0, 0]);
+            console.log("Displays cleared");
+        }, 2000);
+    },
+
+    reset(){
+        console.log("Resetting Seven Segment Display");
+        this.updateAll([0, 0, 0, 0]);
     }
 };
+
+// Initialize when the DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM loaded, initializing seven-segment display");
+    SevenSegmentDisplay.init();
+});
+
