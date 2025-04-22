@@ -17,8 +17,9 @@ body {
         "reg text text data" 
         "reg gap2 gap2 gap3" 
         "reg output log stack"
-        ". led-display led-display led-display";
-    grid-template-rows: min-content min-content min-content 10px min-content 10px min-content 200px;
+        "reg gap4 gap4 stack"
+        "reg seven-segment seven-segment stack";
+    grid-template-rows: min-content min-content min-content 10px min-content 10px min-content 10px min-content;
     grid-template-columns: 16rem 26rem 26rem 36rem;
     grid-column-gap: 10px;
     padding-bottom: 10px;
@@ -132,6 +133,121 @@ pre {
 #log-panel .card-body {
     margin: 0;
 }
+
+#seven-segment-panel {
+    grid-area: seven-segment;
+    height: 290px; /* Same height as #stack-panel */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #seven-segment-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    background-color: black;
+    padding: 20px;
+    border-radius: 10px;
+    height: 100%;
+  }
+  
+  .seven-segment {
+    position: relative;
+    width: 80px;
+    height: 160px;
+}
+
+.seven-segment div {
+    position: absolute; /* <-- This is critical */
+    z-index: 1;
+    border: 1px solid #ccc;
+    background-color: #e0e0e0; /* light grey = segment is off */
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+/* Segment A (top) */
+.segment-a {
+    width: 60px;
+    height: 10px;
+    top: 0;
+    left: 10px;
+}
+
+/* Segment B (top-right) */
+.segment-b {
+    width: 10px;
+    height: 60px;
+    top: 10px;
+    right: 0;
+}
+
+/* Segment C (bottom-right) */
+.segment-c {
+    width: 10px;
+    height: 60px;
+    bottom: 10px;
+    right: 0;
+}
+
+/* Segment D (bottom) */
+.segment-d {
+    width: 60px;
+    height: 10px;
+    bottom: 0;
+    left: 10px;
+}
+
+/* Segment E (bottom-left) */
+.segment-e {
+    width: 10px;
+    height: 60px;
+    bottom: 10px;
+    left: 0;
+}
+
+/* Segment F (top-left) */
+.segment-f {
+    width: 10px;
+    height: 60px;
+    top: 10px;
+    left: 0;
+}
+
+/* Segment G (middle) */
+.segment-g {
+    width: 60px;
+    height: 10px;
+    top: 75px;
+    left: 10px;
+}
+
+/* Active state (turned on) */
+/* .seven-segment .on {
+    background-color: red;
+} */
+
+/* LEFT (MSB) - Blue */
+.digit-left .on {
+    background-color: #007bff;
+}
+
+/* MID-LEFT - Green */
+.digit-mid-left .on {
+    background-color: #28a745;
+}
+
+/* MID-RIGHT - Orange */
+.digit-mid-right .on {
+    background-color: #fd7e14;
+}
+
+/* RIGHT (LSB) - Red */
+.digit-right .on {
+    background-color: #dc3545;
+}
+
 
 .data-number {
     color: #1c00cf;

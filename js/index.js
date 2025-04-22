@@ -70,6 +70,8 @@ async function main(fileInput = null) {
         const filename = typeof fileInput === 'string' ? fileInput.split('/').pop() : fileInput.name;
         document.getElementById('filename-input').value = filename;
     }
+    //SevenSegmentDisplay.updateAll([0x3F, 0x3F, 0x3F, 0x3F]);
+
 }
 
 
