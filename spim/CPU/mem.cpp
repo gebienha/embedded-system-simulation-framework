@@ -37,6 +37,7 @@
 #include "inst.h"
 #include "reg.h"
 #include "mem.h"
+#include "led_display.h"
 
 /* Exported Variables: */
 
@@ -69,6 +70,10 @@ short *k_data_seg_h;
 BYTE_TYPE *k_data_seg_b;
 mem_addr k_data_top;
 
+/* LED memory-mapped IO constants */
+#define MM_LED_BOT 0xFFFF0090    // Change this to match SPIM's standard MMIO range
+#define MM_LED_TOP 0xFFFF0093    // Only need 4 bytes for LED control
+#define LED_BASE_ADDR 0xFFFF0090 // Same as MM_LED_BOT
 
 /* Local functions: */
 
@@ -79,11 +84,6 @@ static void bad_text_write (mem_addr addr, instruction *inst);
 static void free_instructions (instruction **inst, int n);
 static mem_word read_memory_mapped_IO (mem_addr addr);
 static void write_memory_mapped_IO (mem_addr addr, mem_word value);
-
-
-/* Local variables: */
-
-static int32 data_size_limit, stack_size_limit, k_data_size_limit;
 
 
 
@@ -330,6 +330,11 @@ read_mem_inst(mem_addr addr)
 reg_word
 read_mem_byte(mem_addr addr)
 {
+  if (addr >= MM_LED_BOT && addr <= MM_LED_TOP)
+    {
+      // Handle LED display memory-mapped I/O
+      return get_led_display_state(addr);
+    }
   if ((addr >= DATA_BOT) && (addr < data_top))
     return data_seg_b [addr - DATA_BOT];
   else if ((addr >= stack_bot) && (addr < STACK_TOP))
@@ -364,6 +369,8 @@ read_mem_word(mem_addr addr)
     return stack_seg [(addr - stack_bot) >> 2];
   else if ((addr >= K_DATA_BOT) && (addr < k_data_top) && !(addr & 0x3))
     return k_data_seg [(addr - K_DATA_BOT) >> 2];
+  else if (addr >= MM_LED_BOT && addr <= MM_LED_TOP)
+    return read_memory_mapped_IO(addr);
   else
     return bad_mem_read (addr, 0x3);
 }
@@ -385,6 +392,12 @@ set_mem_inst(mem_addr addr, instruction* inst)
 void
 set_mem_byte(mem_addr addr, reg_word value)
 {
+  if (addr >= MM_LED_BOT && addr <= MM_LED_TOP)
+    {
+      // Handle LED display memory-mapped I/O
+      update_led_display(addr, value);
+      return;
+    }
   data_modified = true;
   if ((addr >= DATA_BOT) && (addr < data_top))
     data_seg_b [addr - DATA_BOT] = (BYTE_TYPE) value;
@@ -415,15 +428,17 @@ set_mem_half(mem_addr addr, reg_word value)
 void
 set_mem_word(mem_addr addr, reg_word value)
 {
-  data_modified = true;
-  if ((addr >= DATA_BOT) && (addr < data_top) && !(addr & 0x3))
-    data_seg [(addr - DATA_BOT) >> 2] = (mem_word) value;
-  else if ((addr >= stack_bot) && (addr < STACK_TOP) && !(addr & 0x3))
-    stack_seg [(addr - stack_bot) >> 2] = (mem_word) value;
-  else if ((addr >= K_DATA_BOT) && (addr < k_data_top) && !(addr & 0x3))
-    k_data_seg [(addr - K_DATA_BOT) >> 2] = (mem_word) value;
-  else
-    bad_mem_write (addr, value, 0x3);
+    data_modified = true;
+    if ((addr >= DATA_BOT) && (addr < data_top) && !(addr & 0x3))
+        data_seg [(addr - DATA_BOT) >> 2] = (mem_word) value;
+    else if ((addr >= stack_bot) && (addr < STACK_TOP) && !(addr & 0x3))
+        stack_seg [(addr - stack_bot) >> 2] = (mem_word) value;
+    else if ((addr >= K_DATA_BOT) && (addr < k_data_top) && !(addr & 0x3))
+        k_data_seg [(addr - K_DATA_BOT) >> 2] = (mem_word) value;
+    else if ((addr >= MM_LED_BOT && addr <= MM_LED_TOP))  // Changed condition
+        write_memory_mapped_IO(addr, value);
+    else
+        bad_mem_write(addr, value, 0x3);
 }
 
 
@@ -521,7 +536,7 @@ bad_mem_write (mem_addr addr, mem_word value, int mask)
       tmp = ((tmp & ~(0xff << (8 * (3 - (addr & 0x3)))))
 	       | (value & 0xff) << (8 * (3 - (addr & 0x3))));
 #else
-      tmp = ((tmp & ~(0xff << (8 * (addr & 0x3))))
+      tmp = ((tmp & ~(0xff << (8 * (addr & 0x3)))))
 	       | (value & 0xff) << (8 * (addr & 0x3)));
 #endif
       break;
@@ -532,7 +547,7 @@ bad_mem_write (mem_addr addr, mem_word value, int mask)
       tmp = ((tmp & ~(0xffff << (8 * (2 - (addr & 0x2)))))
 	       | (value & 0xffff) << (8 * (2 - (addr & 0x2))));
 #else
-      tmp = ((tmp & ~(0xffff << (8 * (addr & 0x2))))
+      tmp = ((tmp & ~(0xffff << (8 * (addr & 0x2)))))
 	       | (value & 0xffff) << (8 * (addr & 0x2)));
 #endif
       break;
@@ -704,6 +719,12 @@ write_memory_mapped_IO (mem_addr addr, mem_word value)
       /* Nop: program can't change buffer. */
       break;
 
+    case MM_LED_BOT:
+      printf("LED MMIO write: addr=0x%08x value=0x%08x\n", value);
+      update_led_display(addr, value);
+      break;
+
+    
     default:
       run_error ("Write to unused memory-mapped IO address (0x%x)\n", addr);
     }
@@ -731,6 +752,9 @@ read_memory_mapped_IO (mem_addr addr)
       recv_buffer_full_timer = 0;
       CLEAR_INTERRUPT (RECV_INT_LEVEL); /* Clear IP bit in Cause */
       return (recv_buffer & 0xff);
+
+    case MM_LED_BOT:
+      return get_led_display_state(addr);
 
     default:
       run_error ("Read from unused memory-mapped IO address (0x%x)\n", addr);
