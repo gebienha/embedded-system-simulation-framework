@@ -18,8 +18,10 @@ body {
         "reg gap2 gap2 gap3" 
         "reg output log stack"
         "reg gap4 gap4 stack"
-        "reg seven-segment seven-segment stack";
-    grid-template-rows: min-content min-content min-content 10px min-content 10px min-content 10px min-content;
+        "reg seven-segment seven-segment stack"
+        "reg gap5 gap5 stack"
+        "reg led-display led-display stack";
+    grid-template-rows: min-content min-content min-content 10px min-content 10px min-content 10px min-content 10px min-content;
     grid-template-columns: 16rem 26rem 26rem 36rem;
     grid-column-gap: 10px;
     padding-bottom: 10px;
@@ -248,6 +250,12 @@ pre {
     background-color: #dc3545;
 }
 
+#led-display-panel {
+    grid-area: led-display;
+    height: 290px; /* Same height as #stack-panel */
+    display: flex;
+    flex-direction: column;
+  }
 
 .data-number {
     color: #1c00cf;
