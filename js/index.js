@@ -6,7 +6,8 @@ const fileList = [
     'hello_world.s',
     'read_string.s',
     'timing.s',
-    'timer_interrupt.s'
+    'timer_interrupt.s',
+    '7-segment.s'
 ];
 fileList.forEach(filename => {
     const option = document.createElement("option");
