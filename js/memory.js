@@ -1,19 +1,24 @@
+const LED_BASE_ADDRESS = 0xFFFF0090;
+const LED_STATE = new Uint8Array(1);
+
 class MemoryUtils {
     static init() {
         this.userData = new UserData();
         this.kernelData = new KernelData();
         this.stack = new Stack();
+        this.ledSegment = new LEDSegment();
 
         this.userData.initialize();
         this.kernelData.initialize();
         this.stack.initialize();
+        this.ledSegment.initialize();
     }
 
     static update() {
         this.userData.update();
         this.kernelData.update();
         this.stack.update();
-        this.updateLEDDisplay(); // Update the LED display
+        this.ledSegment.update();
     }
 
     static changeStackRadix(radixStr) {
@@ -33,27 +38,6 @@ class MemoryUtils {
         else
             Elements.kernelDataContainer.style.display = 'none';
     }
-
-    static readLEDState(index) {
-        const address = LED_BASE_ADDRESS + (index * 4); // Each LED uses 4 bytes
-        return this.getContent(address) !== 0;
-    }
-
-    static writeLEDState(index, value) {
-        const address = LED_BASE_ADDRESS + (index * 4);
-        this.setContent(address, value ? 1 : 0);
-        this.updateLEDDisplay();
-    }
-
-    static updateLEDDisplay() {
-        const ledContainer = document.getElementById('led-display');
-        for (let i = 0; i < NUM_LEDS; i++) {
-            const led = ledContainer.children[i];
-            const isOn = this.readLEDState(i);
-            led.style.backgroundColor = isOn ? '#ff0000' : '#300000';
-            led.style.boxShadow = isOn ? '0 0 10px #ff0000' : 'none';
-        }
-    }
 }
 
 class Memory {
@@ -62,6 +46,7 @@ class Memory {
         this.lines = [];
         this.content = undefined;
         this.element = undefined;
+        this.mmioAddresses = new Set([LED_BASE_ADDRESS]); // Add memory-mapped I/O addresses
     }
 
     /**
@@ -107,11 +92,25 @@ class Memory {
     }
 
     /**
+     * Check if the address is a memory-mapped I/O address
+     * @param address a memory address
+     * @returns {boolean} whether the address is MMIO
+     */
+    isMMIOAddress(address) {
+        return this.mmioAddresses.has(address);
+    }
+
+    /**
      * Get content from a certain memory address
      * @param address a memory address
      * @returns {number} the content in the address in int32
      */
     getContent(address) {
+        if (this.isMMIOAddress(address)) {
+            if (address === LED_BASE_ADDRESS) {
+                return LED_STATE[0];
+            }
+        }
         return 0;
     }
 
@@ -119,9 +118,17 @@ class Memory {
      * Set content to a certain memory address
      * @param address a memory address
      * @param value the value to set
+     * @returns {boolean} whether the operation was successful
      */
     setContent(address, value) {
-        // Implementation for setting memory content
+        if (address === LED_BASE_ADDRESS) {
+            LED_STATE[0] = value & 0xFF;
+            if (MemoryUtils.ledSegment) {
+                MemoryUtils.ledSegment.updateLEDDisplay();
+            }
+            return true; // Indicate that the write was handled
+        }
+        return false; // Not handled here
     }
 }
 
@@ -210,14 +217,51 @@ class Stack extends Memory {
     }
 }
 
-function renderLEDDisplay() {
-    const ledContainer = document.getElementById('led-display');
-    ledContainer.innerHTML = ''; // Clear previous state
+class LEDSegment extends Memory {
+    constructor() {
+        super();
+        this.element = document.getElementById('led-display');
+    }
 
-    for (let i = 0; i < 256; i++) {
-        const led = document.createElement('div');
-        led.className = 'led';
-        led.style.backgroundColor = MemoryUtils.readLEDState(i) ? 'red' : 'black';
-        ledContainer.appendChild(led);
+    updateLEDDisplay() {
+        if (!this.element) {
+            console.error('LED display element not found!');
+            return;
+        }
+
+        const value = LED_STATE[0];
+        console.log('LED value:', value.toString(2).padStart(8, '0')); // Debug output
+
+        // Update each LED
+        for (let i = 0; i < 8; i++) {
+            const led = this.element.querySelector(`#led${i}`);
+            if (led) {
+                const isOn = (value & (1 << i)) !== 0;
+                led.classList.toggle('led-on', isOn);
+            }
+        }
+    }
+
+    update() {
+        this.updateLEDDisplay();
+    }
+
+    initialize() {
+        if (!this.element) {
+            console.error('LED display container not found!');
+            return;
+        }
+        
+        // Clear and recreate LED elements
+        this.element.innerHTML = '';
+        for (let i = 7; i >= 0; i--) {
+            const led = document.createElement('div');
+            led.id = `led${i}`;
+            led.className = 'led';
+            this.element.appendChild(led);
+        }
+        
+        LED_STATE[0] = 0;
+        this.updateLEDDisplay();
     }
 }
