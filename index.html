@@ -319,21 +319,21 @@
     <pre id="log-content" class="card-body"></pre>
 </div>
 
-  <div id="seven-segment-panel" class="card">
+<div id="seven-segment-panel" class="card">
     <div class="card-header">
-      <h5 class="segment-title">7-Segment Display</h5>
+      <h5 class= "segment-title">7-Segment Display</h5>
     </div>
     <div class="card-body">
       <div id="seven-segment-container">
         <!-- 4 Digits -->
         <div class="seven-segment digit-left">
-          <div class="segment-a on"></div>
-          <div class="segment-b on"></div>
-          <div class="segment-c on"></div>
-          <div class="segment-d on"></div>
-          <div class="segment-e on"></div>
-          <div class="segment-f on"></div>
-          <div class="segment-g on"></div>
+          <div class="segment-a"></div>
+          <div class="segment-b"></div>
+          <div class="segment-c"></div>
+          <div class="segment-d"></div>
+          <div class="segment-e"></div>
+          <div class="segment-f"></div>
+          <div class="segment-g"></div>
         </div>
         
         <div class="seven-segment digit-mid-left">
@@ -369,42 +369,24 @@
     </div>
 </div>
 
-<div id="led-display-panel" class="card">
+<div id="led-panel" class="card">
     <div class="card-header">
-        <h5 class="segment-title">LED Display</h5>
+      <h5 class="segment-title">LED Display</h5>
     </div>
     <div class="card-body">
-        <div id="led-display">
-            <div id="led7" class="led"></div>
-            <div id="led6" class="led"></div>
-            <div id="led5" class="led"></div>
-            <div id="led4" class="led"></div>
-            <div id="led3" class="led"></div>
-            <div id="led2" class="led"></div>
-            <div id="led1" class="led"></div>
-            <div id="led0" class="led"></div>
-        </div>
+      <div id="led-container">
+        <!-- 8 LEDs -->
+        <div class="led" id="led7"></div>
+        <div class="led" id="led6"></div>
+        <div class="led" id="led5"></div>
+        <div class="led" id="led4"></div>
+        <div class="led" id="led3"></div>
+        <div class="led" id="led2"></div>
+        <div class="led" id="led1"></div>
+        <div class="led" id="led0"></div>
+      </div>
     </div>
-</div>
-  
-  <div id="led-display-panel" class="card">
-    <div class="card-header">
-        <h5>LED Display</h5>
-    </div>
-    <div class="card-body">
-        <div id="led-display">
-            <div id="led7" class="led"></div>
-            <div id="led6" class="led"></div>
-            <div id="led5" class="led"></div>
-            <div id="led4" class="led"></div>
-            <div id="led3" class="led"></div>
-            <div id="led2" class="led"></div>
-            <div id="led1" class="led"></div>
-            <div id="led0" class="led"></div>
-        </div>
-    </div>
-</div>
-
+  </div>
 
 <script type='text/javascript'>
     const Elements = Object.freeze({
@@ -438,6 +420,7 @@
 <script type='text/javascript' src="js/register.js"></script>
 <script type='text/javascript' src="js/execution.js"></script>
 <script type='text/javascript' src="js/seven-segment.js"></script>
+<script type='text/javascript' src="js/led.js"></script>
 <script async type="text/javascript" src="wasm.js"></script>
 </body>
 </html>
