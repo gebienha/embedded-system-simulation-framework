@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIPS UART Simulator</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Card Styles */
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background-color: #f0f0f0;
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .segment-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .card-body {
+            padding: 15px;
+        }
+        
+        /* LED Panel Styles */
+        #led-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        
+        .led {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #ccc;
+            border: 2px solid #999;
+            position: relative;
+        }
+        
+        .led.on {
+            background-color: #ff5f5f;
+            box-shadow: 0 0 5px #ff0000;
+        }
+        
+        /* UART Specific Styles */
+        .uart-container {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .uart-section {
+            flex: 1;
+        }
+        
+        .uart-display {
+            font-family: 'Courier New', monospace;
+            width: 100%;
+            height: 150px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f8f8f8;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+        
+        .uart-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .uart-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .uart-button {
+            padding: 8px 12px;
+            background-color: #4a6da7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .uart-button:hover {
+            background-color: #3a5a8f;
+        }
+        
+        .uart-status {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+            background-color: #ccc;
+        }
+        
+        .status-indicator.active {
+            background-color: #4CAF50;
+        }
+        
+        .baud-selector {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        
+        .uart-badges {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .uart-badge {
+            background-color: #eee;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- LED Panel -->
+        <div id="led-panel" class="card">
+            <div class="card-header">
+                <h5 class="segment-title">LED Display</h5>
+            </div>
+            <div class="card-body">
+                <div id="led-container">
+                    <!-- 8 LEDs -->
+                    <div class="led" id="led7"></div>
+                    <div class="led" id="led6"></div>
+                    <div class="led" id="led5"></div>
+                    <div class="led" id="led4"></div>
+                    <div class="led" id="led3"></div>
+                    <div class="led" id="led2"></div>
+                    <div class="led" id="led1"></div>
+                    <div class="led" id="led0"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- UART Interface -->
+        <div id="uart-interface" class="card">
+            <div class="card-header">
+                <h5 class="segment-title">UART Interface</h5>
+            </div>
+            <div class="card-body">
+                <div class="uart-container">
+                    <!-- TX Section -->
+                    <div class="uart-section">
+                        <h6>Transmit</h6>
+                        <div id="uart-tx-display" class="uart-display"></div>
+                        <div class="uart-controls">
+                            <input type="text" id="uart-tx-input" class="uart-input" placeholder="Type message to send...">
+                            <button id="uart-tx-button" class="uart-button">Send</button>
+                        </div>
+                        <div class="uart-status">
+                            <span><span id="tx-indicator" class="status-indicator"></span> TX</span>
+                            <span id="tx-status">Ready</span>
+                        </div>
+                    </div>
+                    
+                    <!-- RX Section -->
+                    <div class="uart-section">
+                        <h6>Receive</h6>
+                        <div id="uart-rx-display" class="uart-display"></div>
+                        <div class="uart-controls">
+                            <select id="uart-baud-rate" class="baud-selector">
+                                <option value="9600">9600 baud</option>
+                                <option value="19200">19200 baud</option>
+                                <option value="38400">38400 baud</option>
+                                <option value="57600">57600 baud</option>
+                                <option value="115200">115200 baud</option>
+                            </select>
+                            <button id="uart-clear-button" class="uart-button">Clear</button>
+                        </div>
+                        <div class="uart-status">
+                            <span><span id="rx-indicator" class="status-indicator"></span> RX</span>
+                            <span id="rx-status">Idle</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="uart-badges">
+                    <div class="uart-badge">8-N-1</div>
+                    <div class="uart-badge">Address: 0xFFFF0000</div>
+                    <div class="uart-badge">IRQ: 4</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // LED Control Functions
+        function setLed(ledNum, state) {
+            const led = document.getElementById(`led${ledNum}`);
+            if (state) {
+                led.classList.add('on');
+            } else {
+                led.classList.remove('on');
+            }
+        }
+        
+        // Set some LEDs on for demo
+        setLed(0, true);
+        setLed(3, true);
+        setLed(7, true);
+        
+        // UART Functionality
+        const txDisplay = document.getElementById('uart-tx-display');
+        const rxDisplay = document.getElementById('uart-rx-display');
+        const txInput = document.getElementById('uart-tx-input');
+        const txButton = document.getElementById('uart-tx-button');
+        const clearButton = document.getElementById('uart-clear-button');
+        const txIndicator = document.getElementById('tx-indicator');
+        const rxIndicator = document.getElementById('rx-indicator');
+        const txStatus = document.getElementById('tx-status');
+        const rxStatus = document.getElementById('rx-status');
+        
+        // Simulated UART transmission
+        txButton.addEventListener('click', () => {
+            const message = txInput.value.trim();
+            if (message) {
+                // Simulate transmission
+                txStatus.textContent = 'Transmitting...';
+                txIndicator.classList.add('active');
+                
+                // Add to TX display
+                const timestamp = new Date().toLocaleTimeString();
+                txDisplay.innerHTML += `[${timestamp}] TX: ${message}\n`;
+                txDisplay.scrollTop = txDisplay.scrollHeight;
+                
+                // Simulate reception after a delay
+                setTimeout(() => {
+                    rxIndicator.classList.add('active');
+                    rxStatus.textContent = 'Receiving...';
+                    
+                    setTimeout(() => {
+                        // Add to RX display
+                        const rxTimestamp = new Date().toLocaleTimeString();
+                        rxDisplay.innerHTML += `[${rxTimestamp}] RX: ${message}\n`;
+                        rxDisplay.scrollTop = rxDisplay.scrollHeight;
+                        
+                        // Reset status
+                        rxIndicator.classList.remove('active');
+                        rxStatus.textContent = 'Idle';
+                    }, 300);
+                    
+                    // Reset TX status
+                    txIndicator.classList.remove('active');
+                    txStatus.textContent = 'Ready';
+                    txInput.value = '';
+                }, 500);
+            }
+        });
+        
+        // Allow Enter key to send message
+        txInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                txButton.click();
+            }
+        });
+        
+        // Clear button functionality
+        clearButton.addEventListener('click', () => {
+            rxDisplay.innerHTML = '';
+            txDisplay.innerHTML = '';
+        });
+        
+        // UART Memory Map Simulation
+        const uartMemory = {
+            0xFFFF0000: 0x00, // Data register
+            0xFFFF0004: 0x00, // Status register
+            0xFFFF0008: 0x00  // Control register
+        };
+        
+        // Status register bits
+        // Bit 0: TX Ready
+        // Bit 1: RX Data Available
+        // Bit 2: TX Busy
+        // Bit 3: RX Busy
+        
+        // Initialize status register - TX ready
+        uartMemory[0xFFFF0004] = 0x01;
+        
+        // Exposed functions for MIPS simulator integration
+        window.uartInterface = {
+            // Read from UART registers
+            readUart: function(address) {
+                if (address in uartMemory) {
+                    return uartMemory[address];
+                }
+                return 0;
+            },
+            
+            // Write to UART registers
+            writeUart: function(address, value) {
+                if (address === 0xFFFF0000) {
+                    // Data register - transmit character
+                    const char = String.fromCharCode(value);
+                    
+                    // Set TX busy
+                    uartMemory[0xFFFF0004] &= ~0x01; // Clear TX ready bit
+                    uartMemory[0xFFFF0004] |= 0x04;  // Set TX busy bit
+                    
+                    // Display the transmitted character
+                    const timestamp = new Date().toLocaleTimeString();
+                    txDisplay.innerHTML += `[${timestamp}] TX: ${char}\n`;
+                    txDisplay.scrollTop = txDisplay.scrollHeight;
+                    
+                    // Simulate transmission time based on baud rate
+                    const baudRate = parseInt(document.getElementById('uart-baud-rate').value);
+                    const charTime = Math.floor(10000 / baudRate * 1000); // 10 bits per char (start + 8 data + stop)
+                    
+                    // Update visual indicators
+                    txIndicator.classList.add('active');
+                    txStatus.textContent = 'Transmitting...';
+                    
+                    setTimeout(() => {
+                        // Transmission complete
+                        uartMemory[0xFFFF0004] &= ~0x04; // Clear TX busy bit
+                        uartMemory[0xFFFF0004] |= 0x01;  // Set TX ready bit
+                        
+                        // Update indicators
+                        txIndicator.classList.remove('active');
+                        txStatus.textContent = 'Ready';
+                    }, charTime);
+                    
+                    return true;
+                } else if (address === 0xFFFF0004 || address === 0xFFFF0008) {
+                    // Status or control register
+                    uartMemory[address] = value;
+                    return true;
+                }
+                return false;
+            },
+            
+            // Simulate receiving a character
+            receiveChar: function(char) {
+                if (typeof char === 'string' && char.length === 1) {
+                    // Update status register - RX Data Available
+                    uartMemory[0xFFFF0004] |= 0x02;
+                    
+                    // Store received byte in data register
+                    uartMemory[0xFFFF0000] = char.charCodeAt(0);
+                    
+                    // Display received character
+                    const timestamp = new Date().toLocaleTimeString();
+                    rxDisplay.innerHTML += `[${timestamp}] RX: ${char}\n`;
+                    rxDisplay.scrollTop = rxDisplay.scrollHeight;
+                    
+                    // Update visual indicators
+                    rxIndicator.classList.add('active');
+                    rxStatus.textContent = 'Receiving...';
+                    
+                    setTimeout(() => {
+                        rxIndicator.classList.remove('active');
+                        rxStatus.textContent = 'Idle';
+                    }, 300);
+                    
+                    return true;
+                }
+                return false;
+            },
+            
+            // Simulate receiving a string
+            receiveString: function(str) {
+                for (let i = 0; i < str.length; i++) {
+                    setTimeout(() => {
+                        this.receiveChar(str[i]);
+                    }, i * 300); // Stagger character reception
+                }
+            }
+        };
+        
+        // Demo: Simulate receiving a string after page load
+        setTimeout(() => {
+            window.uartInterface.receiveString("MIPS UART Ready!");
+        }, 1000);
+    </script>
+</body>
+</html>

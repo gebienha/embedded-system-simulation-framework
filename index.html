@@ -386,7 +386,57 @@
         <div class="led" id="led0"></div>
       </div>
     </div>
-  </div>
+</div>
+
+<!-- UART Interface -->
+<div id="uart-interface" class="card">
+    <div class="card-header">
+        <h5 class="segment-title">UART Interface</h5>
+    </div>
+    <div class="card-body">
+        <div class="uart-container">
+            <!-- TX Section -->
+            <div class="uart-section">
+                <h6>Transmit</h6>
+                <div id="uart-tx-display" class="uart-display"></div>
+                <div class="uart-controls">
+                    <input type="text" id="uart-tx-input" class="uart-input" placeholder="Type message to send...">
+                    <button id="uart-tx-button" class="uart-button">Send</button>
+                </div>
+                <div class="uart-status">
+                    <span><span id="tx-indicator" class="status-indicator"></span> TX</span>
+                    <span id="tx-status">Ready</span>
+                </div>
+            </div>
+            
+            <!-- RX Section -->
+            <div class="uart-section">
+                <h6>Receive</h6>
+                <div id="uart-rx-display" class="uart-display"></div>
+                <div class="uart-controls">
+                    <select id="uart-baud-rate" class="baud-selector">
+                        <option value="9600">9600 baud</option>
+                        <option value="19200">19200 baud</option>
+                        <option value="38400">38400 baud</option>
+                        <option value="57600">57600 baud</option>
+                        <option value="115200">115200 baud</option>
+                    </select>
+                    <button id="uart-clear-button" class="uart-button">Clear</button>
+                </div>
+                <div class="uart-status">
+                    <span><span id="rx-indicator" class="status-indicator"></span> RX</span>
+                    <span id="rx-status">Idle</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="uart-badges">
+            <div class="uart-badge">8-N-1</div>
+            <div class="uart-badge">Address: 0x10000040</div>
+            <div class="uart-badge">IRQ: 4</div>
+        </div>
+    </div>
+</div>
 
 <script type='text/javascript'>
     const Elements = Object.freeze({
@@ -421,6 +471,7 @@
 <script type='text/javascript' src="js/execution.js"></script>
 <script type='text/javascript' src="js/seven-segment.js"></script>
 <script type='text/javascript' src="js/led.js"></script>
+<script type='text/javascript' src="js/uart.js"></script>
 <script async type="text/javascript" src="wasm.js"></script>
 </body>
 </html>

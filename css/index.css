@@ -17,9 +17,12 @@ body {
         "reg gap2 gap2 gap2" 
         "output output log stack"
         "gap4 gap4 gap4 gap4"
-        "seven-segment seven-segment led-display led-display";
+        "seven-segment seven-segment led-display led-display"
+        "gap3 gap3 gap3 gap3"
+        "uart uart uart uart"
+        ;
         
-    grid-template-rows: min-content  min-content 10px min-content 10px min-content 10px min-content;
+    grid-template-rows: min-content  min-content 10px min-content 10px min-content 10px min-content 10px min-content;
     grid-template-columns: 16rem 26rem 36rem 36rem;
     grid-column-gap: 10px;
     padding-bottom: 10px;
@@ -332,4 +335,100 @@ pre {
 .nav-tabs .nav-link.active {
     background-color: #007bff;
     color: white;
+}
+
+/* UART Interface Styles */
+#uart-interface {
+    grid-area: uart;
+}
+
+.uart-container {
+    display: flex;
+    gap: 20px;
+}
+
+.uart-section {
+    flex: 1;
+}
+
+.uart-display {
+    font-family: 'Courier New', monospace;
+    width: 100%;
+    height: 150px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f8f8f8;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    white-space: pre-wrap;
+    font-size: 14px;
+}
+
+.uart-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.uart-input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+.uart-button {
+    padding: 8px 12px;
+    background-color: #4a6da7;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.uart-button:hover {
+    background-color: #3a5a8f;
+}
+
+.uart-status {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #666;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+    background-color: #ccc;
+}
+
+.status-indicator.active {
+    background-color: #4CAF50;
+}
+
+.baud-selector {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.uart-badges {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.uart-badge {
+    background-color: #eee;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #666;
 }

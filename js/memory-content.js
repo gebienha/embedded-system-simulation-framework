@@ -1,3 +1,4 @@
+// memory-content.js
 class MemoryLine {
     constructor(startAddress, parent) {
         this.wordList = [];
@@ -40,6 +41,11 @@ class MemoryWord {
 
         if (this.address === 0x10000030) {
             this.startPollingLed();
+        }
+
+        // Start polling for UART memory addresses
+        if (this.address >= 0x10000040 && this.address <= 0x10000048) {
+            this.startPollingUart();
         }
     }
 
@@ -115,6 +121,32 @@ class MemoryWord {
         LedDisplay.update(newLedValue);  // Call the LedDisplay's update method
     }
 
+    // Start polling for UART memory registers
+    startPollingUart() {
+        this.previousUartValues = {
+            0x10000040: null, // Data register
+            0x10000044: null, // Status register
+            0x10000048: null  // Control register
+        };
+
+        // Poll every 100ms
+        setInterval(() => this.checkAndUpdateUart(), 100);
+    }
+
+    checkAndUpdateUart() {
+        // Check if the memory address corresponds to the UART registers
+        const uartAddresses = [0x10000040, 0x10000044, 0x10000048];
+        
+        if (uartAddresses.includes(this.address)) {
+            const newValue = this.parent.getContent(this.address);
+            
+            if (newValue !== this.previousUartValues[this.address]) {
+                this.previousUartValues[this.address] = newValue;
+                console.log(`UART memory at 0x${this.address.toString(16)} changed to 0x${newValue?.toString(16)}`);
+            }
+        }
+    }
+
     updateValue() {
         const newValue = this.parent.getContent(this.address);
 
@@ -167,3 +199,55 @@ class MemoryWord {
             .map(e => String.fromCharCode(e)).join('');
     }
 }
+
+// MemorySystem class to integrate UART with the memory subsystem
+class MemorySystem {
+    constructor() {
+        this.memory = {}; // Main memory storage
+        this.radix = 16;  // Default display radix (hexadecimal)
+        
+        // UART will be connected from uart.js when it initializes
+        this.uart = null;
+    }
+    
+    // Connect UART to the memory system - called from uart.js
+    connectUart(uart) {
+        this.uart = uart;
+    }
+    
+    // Get content from memory, handles special memory-mapped regions
+    getContent(address) {
+        // Check if address is in UART range and UART is connected
+        if (this.uart && address >= 0x10000040 && address <= 0x10000048) {
+            return this.uart.readUart(address);
+        }
+        
+        // Return from regular memory otherwise
+        return this.memory[address];
+    }
+    
+    // Set content in memory, handles special memory-mapped regions
+    setContent(address, value) {
+        // Check if address is in UART range and UART is connected
+        if (this.uart && address >= 0x10000040 && address <= 0x10000048) {
+            return this.uart.writeUart(address, value);
+        }
+        
+        // Set in regular memory otherwise
+        this.memory[address] = value;
+        return true;
+    }
+    
+    // Set display radix for memory values
+    setRadix(radix) {
+        this.radix = radix;
+    }
+    
+    // Clear all memory contents
+    clearMemory() {
+        this.memory = {};
+    }
+}
+
+// Initialize the memory system globally
+window.memorySystem = new MemorySystem();
