@@ -128,7 +128,7 @@ class UserData extends DataSegment {
         this.content = Module.getUserData();
         this.startAddress = 0x10000000;
 
-        [0x10000020, 0x10000024, 0x10000028, 0x1000002C, 0x10000030].forEach(addr => {
+        [0x10000020, 0x10000024, 0x10000028, 0x1000002C, 0x10000030, 0x10000040, 0x10000044, 0x10000048].forEach(addr => {
             const alignedAddr = addr & 0xFFFFFFF0;
             if (!this.lineAddresses.has(alignedAddr)) {
                 this.addLine(alignedAddr);
