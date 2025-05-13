@@ -6,7 +6,9 @@ const fileList = [
     'hello_world.s',
     'read_string.s',
     'timing.s',
-    'timer_interrupt.s'
+    'timer_interrupt.s',
+    '7-segment.s',
+    'LED_7_Segment.s',
 ];
 fileList.forEach(filename => {
     const option = document.createElement("option");
@@ -70,6 +72,8 @@ async function main(fileInput = null) {
         const filename = typeof fileInput === 'string' ? fileInput.split('/').pop() : fileInput.name;
         document.getElementById('filename-input').value = filename;
     }
+    //SevenSegmentDisplay.updateAll([0x3F, 0x3F, 0x3F, 0x3F]);
+
 }
 
 

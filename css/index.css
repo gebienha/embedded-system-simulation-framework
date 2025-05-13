@@ -12,14 +12,18 @@ body {
     grid-template-areas: 
         "toolbar toolbar toolbar toolbar" 
         "reg editor editor data" 
-        "reg editor editor data" 
         "reg gap1 gap1 data" 
         "reg text text data" 
-        "reg gap2 gap2 gap3" 
-        "reg output log stack"
-        ". led-display led-display led-display";
-    grid-template-rows: min-content min-content min-content 10px min-content 10px min-content 200px;
-    grid-template-columns: 16rem 26rem 26rem 36rem;
+        "reg gap2 gap2 gap2" 
+        "output output log stack"
+        "gap4 gap4 gap4 gap4"
+        "seven-segment seven-segment led-display led-display"
+        "gap3 gap3 gap3 gap3"
+        "uart uart uart uart"
+        ;
+        
+    grid-template-rows: min-content  min-content 10px min-content 10px min-content 10px min-content 10px min-content;
+    grid-template-columns: 16rem 26rem 36rem 36rem;
     grid-column-gap: 10px;
     padding-bottom: 10px;
 }
@@ -80,12 +84,12 @@ pre {
 
 #data-panel {
     grid-area: data;
-    max-height: 810px
+    max-height: 1110px
 }
 
 #stack-panel {
     grid-area: stack;
-    height: 290px
+    height: 300px
 }
 
 #stack-wrapper {
@@ -103,9 +107,7 @@ pre {
 /* New CSS for the CodeMirror editor */
 #editor-panel {
     grid-area: editor;
-    width: 100%;
-    overflow: auto;
-    max-height: 400px;
+    max-height: 700px;
 }
 
 /* Make sure the CodeMirror instance takes up the full available space */
@@ -116,6 +118,7 @@ pre {
 
 #output-panel {
     grid-area: output;
+    height: 300px
 }
 
 #log-panel {
@@ -125,12 +128,192 @@ pre {
 #output-panel pre,
 #log-panel pre {
     white-space: pre-wrap;
-    height: 8rem;
+    height: 200px;
 }
 
 #output-panel .card-body,
 #log-panel .card-body {
     margin: 0;
+}
+
+#seven-segment-panel {
+    grid-area: seven-segment;
+    height: 290px; /* Same height as #stack-panel */
+    display: flex;
+    flex-direction: column;
+}
+  
+#seven-segment-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    background-color: black;
+    padding: 20px;
+    border-radius: 10px;
+    height: 100%;
+}
+
+.seven-segment {
+    position: relative;
+    width: 80px;
+    height: 160px;
+}
+
+.seven-segment div {
+    position: absolute; /* <-- This is critical */
+    z-index: 1;
+    border: 1px solid #ccc;
+    background-color: #e0e0e0; /* light grey = segment is off */
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+/* Segment A (top) */
+.segment-a {
+    width: 60px;
+    height: 10px;
+    top: 0;
+    left: 10px;
+}
+
+/* Segment B (top-right) */
+.segment-b {
+    width: 10px;
+    height: 60px;
+    top: 10px;
+    right: 0;
+}
+
+/* Segment C (bottom-right) */
+.segment-c {
+    width: 10px;
+    height: 60px;
+    bottom: 10px;
+    right: 0;
+}
+
+/* Segment D (bottom) */
+.segment-d {
+    width: 60px;
+    height: 10px;
+    bottom: 0;
+    left: 10px;
+}
+
+/* Segment E (bottom-left) */
+.segment-e {
+    width: 10px;
+    height: 60px;
+    bottom: 10px;
+    left: 0;
+}
+
+/* Segment F (top-left) */
+.segment-f {
+    width: 10px;
+    height: 60px;
+    top: 10px;
+    left: 0;
+}
+
+/* Segment G (middle) */
+.segment-g {
+    width: 60px;
+    height: 10px;
+    top: 75px;
+    left: 10px;
+}
+
+/* LEFT (MSB) - Blue */
+.digit-left .on {
+    background-color: #007bff;
+}
+
+/* MID-LEFT - Green */
+.digit-mid-left .on {
+    background-color: #28a745;
+}
+
+/* MID-RIGHT - Orange */
+.digit-mid-right .on {
+    background-color: #fd7e14;
+}
+
+/* RIGHT (LSB) - Red */
+.digit-right .on {
+    background-color: #dc3545;
+}
+
+/* LED Display Panel */
+#led-panel {
+    grid-area: led-display;
+    height: 290px; /* Same height as seven-segment-panel */
+    display: flex;
+    flex-direction: column;
+}
+
+#led-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    background-color: black;
+    padding: 20px;
+    border-radius: 10px;
+    height: 100%;
+}
+
+.led {
+    width: 70px;     /* Increased from 60px */
+    height: 70px;    /* Increased from 60px */
+    background-color: #e0e0e0; /* OFF state: light grey */
+    border: 3px solid #ccc;    /* Slightly thicker border */
+    box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin: 10px;
+    border-radius: 50%;
+}
+
+/* ON states with amplified glow effects */
+#led7.led-on {
+    background-color: #007bff;
+    box-shadow: 0 0 20px #007bff;
+}
+
+#led6.led-on {
+    background-color: #28a745;
+    box-shadow: 0 0 20px #28a745;
+}
+
+#led5.led-on {
+    background-color: #fd7e14;
+    box-shadow: 0 0 20px #fd7e14;
+}
+
+#led4.led-on {
+    background-color: #dc3545;
+    box-shadow: 0 0 20px #dc3545;
+}
+
+#led3.led-on {
+    background-color: #6f42c1;
+    box-shadow: 0 0 20px #6f42c1;
+}
+
+#led2.led-on {
+    background-color: #20c997;
+    box-shadow: 0 0 20px #20c997;
+}
+
+#led1.led-on {
+    background-color: #ffc107;
+    box-shadow: 0 0 20px #ffc107;
+}
+
+#led0.led-on {
+    background-color: #17a2b8;
+    box-shadow: 0 0 20px #17a2b8;
 }
 
 .data-number {
@@ -154,36 +337,98 @@ pre {
     color: white;
 }
 
-/* Add LED display panel styles */
-#led-display-panel {
-    grid-area: led-display;
-    margin: 20px 0;
-    padding: 10px;
+/* UART Interface Styles */
+#uart-interface {
+    grid-area: uart;
 }
 
-#led-display {
+.uart-container {
     display: flex;
-    justify-content: center;
+    gap: 20px;
+}
+
+.uart-section {
+    flex: 1;
+}
+
+.uart-display {
+    font-family: 'Courier New', monospace;
+    width: 100%;
+    height: 150px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f8f8f8;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    white-space: pre-wrap;
+    font-size: 14px;
+}
+
+.uart-controls {
+    display: flex;
     gap: 10px;
-    padding: 20px;
-    background-color: #1a1a1a;
-    border-radius: 8px;
-    margin: 10px 0;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
-.led {
-    width: 20px;
-    height: 20px;
+.uart-input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+.uart-button {
+    padding: 8px 12px;
+    background-color: #4a6da7;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.uart-button:hover {
+    background-color: #3a5a8f;
+}
+
+.uart-status {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #666;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background-color: #333333;
-    transition: all 0.2s ease;
+    margin-right: 5px;
+    background-color: #ccc;
 }
 
-.led.led-on {
-    background-color: #f00;  /* Red when on */
-    box-shadow: 0 0 10px #f00;
+.status-indicator.active {
+    background-color: #4CAF50;
 }
 
-.led:hover {
-    transform: scale(1.1);
+.baud-selector {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.uart-badges {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.uart-badge {
+    background-color: #eee;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #666;
 }

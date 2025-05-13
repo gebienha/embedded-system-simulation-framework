@@ -21,6 +21,8 @@ class Execution {
         if (reset) {
             InstructionUtils.removeAllBreakpoints();
             InstructionUtils.highlightCurrentInstruction();
+            SevenSegmentDisplay.reset();
+            
         } else {
             InstructionUtils.init();
             InstructionUtils.highlightCurrentInstruction();
