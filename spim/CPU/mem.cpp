@@ -657,76 +657,65 @@ check_memory_mapped_IO ()
 /* Invoked on a write to the memory-mapped IO area. */
 
 static void
-write_memory_mapped_IO (mem_addr addr, mem_word value)
+write_memory_mapped_IO(mem_addr addr, mem_word value)
 {
   switch (addr)
     {
     case TRANS_CTRL_ADDR:
-      /* Program can only set the interrupt enable, not ready, bit. */
       if ((value & TRANS_INT_ENABLE) != 0)
-	{
-	  /* Enable interrupts: */
-	  trans_control |= TRANS_INT_ENABLE;
-	  if (trans_control & TRANS_READY)
-	    {
-	      /* Raise interrupt on enabling a ready transmitter */
-	      RAISE_INTERRUPT (TRANS_INT_LEVEL);
-	    }
-	}
+        {
+          trans_control |= TRANS_INT_ENABLE;
+          if (trans_control & TRANS_READY)
+            {
+              RAISE_INTERRUPT(TRANS_INT_LEVEL);
+            }
+        }
       else
-	{
-	  /* Disable interrupts: */
-	  trans_control &= ~TRANS_INT_ENABLE;
-	  CLEAR_INTERRUPT (TRANS_INT_LEVEL); /* Clear IP bit in Cause */
-	}
+        {
+          trans_control &= ~TRANS_INT_ENABLE;
+          CLEAR_INTERRUPT(TRANS_INT_LEVEL);
+        }
       break;
 
     case TRANS_BUFFER_ADDR:
-      /* Ignore write if device is not ready. */
       if ((trans_control & TRANS_READY) != 0)
-	{
-	  /* Write char: */
-	  trans_buffer = value & 0xff;
-	  put_console_char ((char)trans_buffer);
-	  /* Device is busy for a while: */
-	  trans_control &= ~TRANS_READY;
-	  trans_buffer_full_timer = TRANS_LATENCY;
-          CLEAR_INTERRUPT (TRANS_INT_LEVEL); /* Clear IP bit in Cause */
-	}
+        {
+          trans_buffer = value & 0xff;
+          put_console_char((char)trans_buffer);
+          trans_control &= ~TRANS_READY;
+          trans_buffer_full_timer = TRANS_LATENCY;
+          CLEAR_INTERRUPT(TRANS_INT_LEVEL);
+        }
       break;
 
     case RECV_CTRL_ADDR:
-      /* Program can only set the interrupt enable, not ready, bit. */
       if ((value & RECV_INT_ENABLE) != 0)
-	{
-	  /* Enable interrupts: */
-	  recv_control |= RECV_INT_ENABLE;
-	  if (recv_control & RECV_READY)
-	    {
-	      /* Raise interrupt on enabling a ready receiver */
-	      RAISE_INTERRUPT (RECV_INT_LEVEL);
-	    }
-	}
+        {
+          recv_control |= RECV_INT_ENABLE;
+          if (recv_control & RECV_READY)
+            {
+              RAISE_INTERRUPT(RECV_INT_LEVEL);
+            }
+        }
       else
-	{
-	  /* Disable interrupts: */
-	  recv_control &= ~RECV_INT_ENABLE;
-	  CLEAR_INTERRUPT (RECV_INT_LEVEL); /* Clear IP bit in Cause */
-	}
+        {
+          recv_control &= ~RECV_INT_ENABLE;
+          CLEAR_INTERRUPT(RECV_INT_LEVEL);
+        }
       break;
 
     case RECV_BUFFER_ADDR:
-      /* Nop: program can't change buffer. */
+      // Program can't write to receive buffer.
       break;
 
-    case MM_LED_BOT:
-      printf("LED MMIO write: addr=0x%08x value=0x%08x\n", value);
+    case LED_BASE_ADDR:  // 🔧 Add this exact match for LED I/O
+      printf("LED MMIO write: addr=0x%08x value=0x%08x\n", addr, value);
       update_led_display(addr, value);
       break;
 
-    
     default:
-      run_error ("Write to unused memory-mapped IO address (0x%x)\n", addr);
+      run_error("Write to unused memory-mapped IO address (0x%x)\n", addr);
+      break;
     }
 }
 
@@ -734,7 +723,7 @@ write_memory_mapped_IO (mem_addr addr, mem_word value)
 /* Invoked on a read in the memory-mapped IO area. */
 
 static mem_word
-read_memory_mapped_IO (mem_addr addr)
+read_memory_mapped_IO(mem_addr addr)
 {
   switch (addr)
     {
@@ -750,15 +739,16 @@ read_memory_mapped_IO (mem_addr addr)
     case RECV_BUFFER_ADDR:
       recv_control &= ~RECV_READY; /* Buffer now empty */
       recv_buffer_full_timer = 0;
-      CLEAR_INTERRUPT (RECV_INT_LEVEL); /* Clear IP bit in Cause */
+      CLEAR_INTERRUPT(RECV_INT_LEVEL); /* Clear IP bit in Cause */
       return (recv_buffer & 0xff);
 
-    case MM_LED_BOT:
+    case LED_BASE_ADDR:  // handle specific LED address
+      std::cout << "Hello from LED read!" << std::endl;
       return get_led_display_state(addr);
 
     default:
-      run_error ("Read from unused memory-mapped IO address (0x%x)\n", addr);
-      return (0);
+      run_error("Read from unused memory-mapped IO address (0x%x)\n", addr);
+      return 0;
     }
 }
 
