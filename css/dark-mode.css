@@ -1,0 +1,155 @@
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+body.dark-mode .card {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #444;
+}
+
+body.dark-mode .card-header {
+    background-color: transparent;
+    border-color: #444;
+    color: #e0e0e0;
+}
+
+body.dark-mode .card-body {
+    background-color: transparent;
+}
+
+body.dark-mode .navbar {
+    background-color: transparent !important;
+    border-color: #444;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .custom-file-label,
+body.dark-mode select {
+    background-color: #3a3a3a;
+    color: #e0e0e0;
+    border-color: #555;
+}
+
+body.dark-mode .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+body.dark-mode .btn-success {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+body.dark-mode .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+body.dark-mode pre {
+    background-color: transparent;
+    color: #e0e0e0 !important;
+}
+
+/* Target all text in cards */
+body.dark-mode .card-body * {
+    color: #e0e0e0;
+}
+
+/* Specific overrides for register and memory content */
+body.dark-mode #general-regs,
+body.dark-mode #special-int-regs,
+body.dark-mode #special-float-regs,
+body.dark-mode #float-regs,
+body.dark-mode #double-regs,
+body.dark-mode #user-text-content,
+body.dark-mode #kernel-text-content,
+body.dark-mode #user-data-content,
+body.dark-mode #kernel-data-content,
+body.dark-mode #stack-content,
+body.dark-mode #output-content,
+body.dark-mode #log-content {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .data-number {
+    color: #66b3ff !important; /* Brighter blue for numbers */
+}
+
+body.dark-mode .unused {
+    color: #888 !important; /* Lighter grey for unused registers */
+}
+
+/* Make links brighter */
+body.dark-mode a {
+    color: #6eb5ff;
+}
+
+body.dark-mode a:hover {
+    color: #8cc5ff;
+}
+
+/* Improve text readability */
+body.dark-mode {
+    background-color: #1e1e1e;
+    color: #e8e8e8; /* Slightly brighter base text */
+}
+
+/* Make labels and headers more visible */
+body.dark-mode label,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: #f0f0f0;
+}
+
+/* Bright colors for register values and important text */
+body.dark-mode .highlight {
+    background-color: #5a5a00;
+    color: #ffff99; /* Bright yellow text on highlight */
+}
+
+body.dark-mode .nav-tabs .nav-link {
+    color: #e0e0e0;
+    background-color: #2d2d2d;
+    border-color: #444;
+}
+
+body.dark-mode .nav-tabs .nav-link.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+
+body.dark-mode .uart-display {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border-color: #555;
+}
+
+body.dark-mode .uart-input {
+    background-color: #3a3a3a;
+    color: #e0e0e0;
+    border-color: #555;
+}
+
+body.dark-mode .uart-badge {
+    background-color: #3a3a3a;
+    color: #e0e0e0;
+}
+
+body.dark-mode .uart-status {
+    color: #aaa;
+}
+
+/* CodeMirror dark mode support */
+body.dark-mode .CodeMirror {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+}
+
+body.dark-mode .CodeMirror-gutters {
+    background-color: #1e1e1e;
+    border-color: #444;
+}

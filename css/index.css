@@ -10,7 +10,7 @@ body {
     margin: auto !important;
     display: grid;
     grid-template-areas: 
-        "toolbar toolbar toolbar toolbar" 
+        "toolbar toolbar toolbar uploadButton" 
         "reg editor editor data" 
         "reg gap1 gap1 data" 
         "reg text text data" 
@@ -58,6 +58,15 @@ pre {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
+}
+
+#uploadButton {
+    grid-area: uploadButton;
+    justify-content: flex-end;
+    display: flex;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-right: 1px;
 }
 
 #regs-panel {

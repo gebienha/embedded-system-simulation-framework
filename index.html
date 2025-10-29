@@ -13,8 +13,10 @@
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <link rel="stylesheet" type="text/css" href="css/xcode.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/eclipse.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/monokai.min.css">
     
     <title>JsSpim - Online MIPS32 Simulator Based on Spim</title>
 
@@ -66,6 +68,10 @@
         </div>
     </div>
 </nav>
+
+<div id="uploadButton">
+    <button id="theme-toggle" class="btn btn-dark btn-sm">🌙 Dark Mode</button>
+</div>
 
 <div id="regs-panel" class="card">
     <div class="card-header">
@@ -438,6 +444,8 @@
     </div>
 </div>
 
+
+
 <script type='text/javascript'>
     const Elements = Object.freeze({
         output: document.getElementById('output-content'),
@@ -465,13 +473,14 @@
 
 <script type='text/javascript' src="js/index.js"></script>
 <script type='text/javascript' src="js/instruction.js"></script>
+<script type='text/javascript' src="js/uart.js"></script>
 <script type='text/javascript' src="js/memory-content.js"></script>
 <script type='text/javascript' src="js/memory.js"></script>
 <script type='text/javascript' src="js/register.js"></script>
 <script type='text/javascript' src="js/execution.js"></script>
 <script type='text/javascript' src="js/seven-segment.js"></script>
 <script type='text/javascript' src="js/led.js"></script>
-<script type='text/javascript' src="js/uart.js"></script>
+<script type='text/javascript' src="js/theme-toggle.js"></script>
 <script async type="text/javascript" src="wasm.js"></script>
 </body>
 </html>

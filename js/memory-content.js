@@ -130,19 +130,24 @@ class MemoryWord {
         };
 
         // Poll every 100ms
-        setInterval(() => this.checkAndUpdateUart(), 100);
+        setInterval(() => this.checkAndUpdateUart(), 1);
     }
 
     checkAndUpdateUart() {
-        // Check if the memory address corresponds to the UART registers
         const uartAddresses = [0x10000040, 0x10000044, 0x10000048];
-        
+
         if (uartAddresses.includes(this.address)) {
             const newValue = this.parent.getContent(this.address);
-            
+
             if (newValue !== this.previousUartValues[this.address]) {
                 this.previousUartValues[this.address] = newValue;
                 console.log(`UART memory at 0x${this.address.toString(16)} changed to 0x${newValue?.toString(16)}`);
+
+                // If writing to data register, display the transmitted char
+                if (this.address === 0x10000040 && window.uart) {
+                    const char = String.fromCharCode(newValue & 0xFF);
+                    window.uartInterface.receiveChar(char); // Update the UART UI
+                }
             }
         }
     }
@@ -201,25 +206,32 @@ class MemoryWord {
 }
 
 // MemorySystem class to integrate UART with the memory subsystem
+// MemorySystem class to integrate UART with the memory subsystem
 class MemorySystem {
     constructor() {
         this.memory = {}; // Main memory storage
         this.radix = 16;  // Default display radix (hexadecimal)
-        
-        // UART will be connected from uart.js when it initializes
-        this.uart = null;
+        this.uart = null; // UART will be connected from uart.js
     }
     
     // Connect UART to the memory system - called from uart.js
     connectUart(uart) {
         this.uart = uart;
+        console.log('UART connected to memory system');
+    }
+    
+    // Check if address is in UART memory-mapped range
+    isUartAddress(address) {
+        return address >= 0x10000040 && address <= 0x10000048;
     }
     
     // Get content from memory, handles special memory-mapped regions
     getContent(address) {
         // Check if address is in UART range and UART is connected
-        if (this.uart && address >= 0x10000040 && address <= 0x10000048) {
-            return this.uart.readUart(address);
+        if (this.uart && this.isUartAddress(address)) {
+            const value = this.uart.readUart(address);
+            console.log(`UART Read: addr=0x${address.toString(16)}, value=0x${value?.toString(16)}`);
+            return value;
         }
         
         // Return from regular memory otherwise
@@ -229,7 +241,7 @@ class MemorySystem {
     // Set content in memory, handles special memory-mapped regions
     setContent(address, value) {
         // Check if address is in UART range and UART is connected
-        if (this.uart && address >= 0x10000040 && address <= 0x10000048) {
+        if (this.uart && this.isUartAddress(address)) {
             return this.uart.writeUart(address, value);
         }
         
@@ -243,9 +255,77 @@ class MemorySystem {
         this.radix = radix;
     }
     
-    // Clear all memory contents
+    // Clear all memory contents (preserve UART state)
     clearMemory() {
         this.memory = {};
+    }
+}
+
+// Memory Cell class for UI display
+class MemoryCell {
+    constructor(address, parent, valueElement, stringElement) {
+        this.address = address;
+        this.parent = parent;
+        this.valueElement = valueElement;
+        this.stringElement = stringElement;
+        this.value = undefined;
+        this.previousValue = undefined;
+    }
+
+    updateValue() {
+        const newValue = this.parent.getContent(this.address);
+
+        if (newValue === undefined) {
+            this.valueElement.classList.add('unused');
+            this.stringElement.classList.add('unused');
+            return;
+        }
+
+        if (this.value === newValue) {
+            this.valueElement.classList.remove('highlight', 'unused');
+            this.stringElement.classList.remove('highlight', 'unused');
+            return;
+        }
+
+        if (this.value !== undefined) {
+            this.valueElement.classList.add('highlight');
+            this.stringElement.classList.add('highlight');
+        }
+
+        this.value = newValue;
+        this.valueElement.innerText = this.getValueInnerText();
+        this.stringElement.innerText = this.getStringInnerText();
+        
+        // Remove highlight after animation
+        setTimeout(() => {
+            this.valueElement.classList.remove('highlight');
+            this.stringElement.classList.remove('highlight');
+        }, 500);
+    }
+
+    getValueInnerText() {
+        if (this.parent.radix === 10) {
+            const string = this.value === undefined ? '' : this.value.toString();
+            return string.padStart(10, ' ');
+        } else {
+            if (this.value === undefined) return ''.padStart(8);
+            return this.value.toString(16).padStart(8, '0');
+        }
+    }
+
+    getStringInnerText() {
+        if (this.value === undefined)
+            return ''.padStart(4);
+
+        const asciiArray = [
+            this.value & 0xff,
+            (this.value & 0xffff) >> 8,
+            (this.value & 0xffffff) >> 16,
+            this.value >> 24
+        ];
+        return asciiArray
+            .map(e => e >= 32 && e < 127 ? e : 183)
+            .map(e => String.fromCharCode(e)).join('');
     }
 }
 
