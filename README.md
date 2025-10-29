@@ -63,6 +63,8 @@ It provides a modernized web interface, new editing capabilities, and additional
 - **7-Segment** and **LED** features for simulation
 - **UART** interface
 
+---
+
 ## Built With
 
 - [Spim](http://spimsimulator.sourceforge.net/) - The original simulator written in C++
@@ -72,3 +74,17 @@ It provides a modernized web interface, new editing capabilities, and additional
 - [highlight.js](https://highlightjs.org/) - For highlighting the source code
 - [CodeMirror](https://codemirror.net/) - In-browser code eitor
 
+---
+
+## How to Launch the Simulator
+After downloading the repository, you can launch the simulator in two ways—both using Visual Studio Code (VSCode). Before starting, make sure the *`Live Server`* extension is installed.
+**Option 1**: Manual Launch via VSCode
+1. Open the simulator folder in VSCode
+2. Open the `index.html` file
+3. Start the server using one of the following methods:
+   - Click **Go Live** in the bottom-right corner of VSCode
+   - Right-click anywhere in the editor and select **Open with Live Server**
+   - Use the keyboard shortcut: `Alt+L`, then `Alt+O`
+**Option 2**: Automatic Launch via Script
+1. Navigate to the simulator folder in your file explorer
+2. Double-click `start_server.bat` to launch the simulator automatically. This way, there is no need to open VSCode manually.
