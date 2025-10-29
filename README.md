@@ -4,12 +4,11 @@ It provides a modernized web interface, new editing capabilities, and additional
 
 ## Background
 
-**Spim** is a self-contained MIPS32 simulator that reads and executes assembly programs written for the MIPS architecture.  
-It also includes a simple debugger and basic operating system services, but it does not execute compiled binaries.
+**Spim** a simulator that runs MIPS32 assembly programs and provides a simple debugger and OS services.
 
 **JsSpim** extended Spim by compiling it to WebAssembly (via Emscripten) and creating an interactive web-based environment.
 
-**This simulator** builds further on **JsSpim**, focusing on **enhanced usability**, **visualization**, and **educational tools**.
+**This simulator** builds further on **JsSpim**, focusing on enhanced usability, visualization, and educational tools.
 
 ---
 
@@ -19,24 +18,48 @@ It also includes a simple debugger and basic operating system services, but it d
 
 ## New Features in WebMIPS
 
-- **Integrated Code Editor** using [CodeMirror]  
-  Users can write, edit, and assemble MIPS code directly in the browser.  
+### User Interface Improvements
+- **Dark Theme Mode**  
+  Provides a sleek and eye-friendly dark mode for long coding sessions.
+  
+- **Aligned Panel Layouts**  
+  The UI grid has been refined to align all panels neatly:
+  - Code editor  
+  - Register view  
+  - Data and stack panels  
+  - 7-segment and LED displays  
+  - UART interface  
 
-- **7-Segment Display and LED Simulation**  
-  Developed interactive 7-segment and LED panels to visualize binary/decimal outputs from MIPS programs.
+- **Refined CSS Grid Layout**  
+  Adjusted element sizes and spacing for a cleaner, more organized interface.
 
-- **Dark Theme Support**  
-  Added an alternate dark mode UI for better readability.
+---
 
-- **Aligned Peripheral Layouts**  
-  Improved layout alignment for the 7-segment display, LEDs, and other simulated peripherals.
+### Integrated Code Editor (CodeMirror)
+- Replaced the basic text area with **CodeMirror**, providing:
+  - Syntax highlighting for MIPS assembly
+  - Line numbering and auto-indentation
+  - A better, more interactive editing experience directly in the browser
 
-- **Improved Interface Styling**  
-  Updated toolbar, consistent layout adjustments, and smoother visual feedback during execution.
+---
+
+### Peripheral Simulation
+- **7-Segment Display**  
+  Displays numeric output in a color-coded, aligned layout.
+- **LED Display**  
+  Circular LED lights with glow effects for ON/OFF states.
+- **UART Interface**  
+  Basic serial communication simulation with:
+  - Data register: `0x10000040`  
+  - Status register: `0x10000044`  
+  - Control register: `0x10000048`
+
+---
 
 ## Screenshot
 
-![]()
+<img src="Screenshot.png" width="100%">
+<img src="Dark Mode.png" width="100%">
 
 ## Screen Record
 
@@ -52,7 +75,9 @@ It also includes a simple debugger and basic operating system services, but it d
 ## Built With
 
 - [Spim](http://spimsimulator.sourceforge.net/) - The original simulator written in C++
+- [JsSpim](https://github.com/ShawnZhong/JsSpim)
 - [Emscripten](https://emscripten.org/) - Toolchain to compile C++ source code to WebAssembly using the LLVM IR.
 - [Bootstrap](https://getbootstrap.com/)  - Using the CSS library to build the UI
 - [highlight.js](https://highlightjs.org/) - For highlighting the source code
+- [CodeMirror] - In-browser code eitor
 
