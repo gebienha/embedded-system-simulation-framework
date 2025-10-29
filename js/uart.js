@@ -1,5 +1,4 @@
 /**
- * MIPS UART Interface Implementation (EDSim51-like)
  * Memory-mapped addresses:
  * - 0x10000040: Data register (read RX, write TX)
  * - 0x10000044: Status register
@@ -35,16 +34,14 @@ class UART {
     setupEventListeners() {
         if (!this.txButton || !this.txInput || !this.clearButton) return;
 
-        // Manual send button - simulates MIPS transmitting and loopback to RX
+
         this.txButton.addEventListener('click', () => {
             const message = this.txInput.value.trim();
             if (message) {
-                // Simulate MIPS writing each character to UART (shows in TX)
                 for (let char of message) {
                     this.transmitChar(char);
                 }
                 
-                // Also simulate receiving it back (loopback for testing)
                 setTimeout(() => {
                     this.receiveString(message);
                 }, 200);
@@ -73,16 +70,14 @@ class UART {
         // Status register bit masks
         this.STATUS_TX_READY = 0x01;           // Bit 0: TX ready to send
         this.STATUS_RX_DATA_AVAILABLE = 0x02;  // Bit 1: RX data available
-        this.STATUS_TX_BUSY = 0x04;            // Bit 2: TX busy (optional)
-        this.STATUS_RX_BUSY = 0x08;            // Bit 3: RX busy (optional)
+        this.STATUS_TX_BUSY = 0x04;            // Bit 2: TX busy
+        this.STATUS_RX_BUSY = 0x08;            // Bit 3: RX busy
         
         // RX buffer for incoming characters
         this.rxBuffer = [];
     }
 
-    /**
-     * Read from UART memory - called by memory system
-     */
+
     readUart(address) {
         if (!(address in this.uartMemory)) {
             console.log(`UART readUart: Unknown address 0x${address.toString(16)}`);
@@ -114,9 +109,7 @@ class UART {
         return value;
     }
 
-    /**
-     * Write to UART memory - called by memory system when MIPS writes
-     */
+
     writeUart(address, value) {
         // Writing to data register = transmit character
         if (address === 0x10000040) {
@@ -138,10 +131,7 @@ class UART {
         return false;
     }
 
-    /**
-     * Transmit a character (MIPS -> External)
-     * This is called when MIPS writes to the data register
-     */
+
     transmitChar(char) {
         if (!this.txDisplay) return;
         
@@ -159,10 +149,6 @@ class UART {
         }, 100);
     }
 
-    /**
-     * Receive a character (External -> MIPS)
-     * This simulates external data arriving at UART
-     */
     receiveChar(char) {
         if (typeof char !== 'string' || char.length !== 1) return false;
         
@@ -199,9 +185,7 @@ class UART {
         return true;
     }
 
-    /**
-     * Receive a string of characters with timing
-     */
+
     receiveString(str) {
         if (!str) return;
         
@@ -217,9 +201,7 @@ class UART {
         sendNextChar();
     }
 
-    /**
-     * Status check methods for MIPS code
-     */
+
     isTxReady() {
         return (this.uartMemory[0x10000044] & this.STATUS_TX_READY) !== 0;
     }
@@ -228,9 +210,7 @@ class UART {
         return (this.uartMemory[0x10000044] & this.STATUS_RX_DATA_AVAILABLE) !== 0;
     }
 
-    /**
-     * Escape HTML for safe display
-     */
+
     escapeHtml(text) {
         const map = {
             '&': '&amp;',
