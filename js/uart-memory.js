@@ -1,6 +1,3 @@
-// Direct UART Memory Hook - Intercepts actual MIPS simulator memory access
-// This bypasses the complex memory system integration and hooks directly into memory
-
 console.log("UART Direct Memory Hook - Loading...");
 
 // Function to hook into the actual memory array used by MIPS simulator
@@ -20,7 +17,6 @@ window.createDirectUartHook = function() {
         console.log("UART reset to clean state");
     }
     
-    // Method 1: Hook into global memory array (most MIPS simulators use this)
     if (!window.memory) {
         window.memory = new Array(0x10100000).fill(0);
         console.log("Created global memory array");
@@ -91,7 +87,6 @@ window.createDirectUartHook = function() {
         }
     });
     
-    // Method 2: Override common memory access function patterns
     const memFunctions = [
         'loadWord', 'storeWord', 'loadByte', 'storeByte',
         'readWord', 'writeWord', 'readByte', 'writeByte',
@@ -117,7 +112,6 @@ window.createDirectUartHook = function() {
         }
     });
     
-    // Method 3: Create direct access functions for MIPS simulator
     window.uartRead = function(address) {
         console.log(`Direct uartRead(0x${address.toString(16)})`);
         return uart ? uart.readUart(address) : (address === UART_STATUS_ADDR ? 0x01 : 0x00);
@@ -128,7 +122,6 @@ window.createDirectUartHook = function() {
         return uart ? uart.writeUart(address, value) : true;
     };
     
-    // Method 4: Set specific memory locations directly
     // Some simulators might do direct array access
     if (originalMemory && typeof originalMemory === 'object') {
         // Set initial values
@@ -178,7 +171,6 @@ window.monitorMemoryAccess = function() {
     let accessCount = 0;
     const originalGet = window.memory.__proto__.constructor.prototype.get;
     
-    // This is a more aggressive approach - monitor ALL memory access
     const handler = {
         get(target, prop) {
             const address = parseInt(prop);
