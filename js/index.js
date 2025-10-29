@@ -9,6 +9,7 @@ const fileList = [
     'timer_interrupt.s',
     '7-segment.s',
     'LED_7_Segment.s',
+    'uart.s',
 ];
 fileList.forEach(filename => {
     const option = document.createElement("option");
