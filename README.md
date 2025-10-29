@@ -85,6 +85,7 @@ After downloading the repository, you can launch the simulator in two ways—bot
    - Click **Go Live** in the bottom-right corner of VSCode
    - Right-click anywhere in the editor and select **Open with Live Server**
    - Use the keyboard shortcut: `Alt+L`, then `Alt+O`
+
 **Option 2**: Automatic Launch via Script
 1. Navigate to the simulator folder in your file explorer
 2. Double-click `start_server.bat` to launch the simulator automatically. This way, there is no need to open VSCode manually.
