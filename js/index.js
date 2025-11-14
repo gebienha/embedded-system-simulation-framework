@@ -116,7 +116,7 @@ async function loadData(fileInput) {
 
 }
 
-// Add this function to handle the assemble button click
+// to handle the assemble button click
 function assembleCode() {
     // Get the code from the editor
     const code = editor.getValue();
@@ -169,7 +169,7 @@ document.getElementById('file-selector').addEventListener('change', function(eve
 // Initialize the program
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize with an empty input.s
-    // Initialize the editor (assuming you're using something like CodeMirror or Ace)
+    // Initialize the editor 
     console.log('Initializing editor...');
     editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
         lineNumbers: true,

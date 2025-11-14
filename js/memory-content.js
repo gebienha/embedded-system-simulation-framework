@@ -43,13 +43,12 @@ class MemoryWord {
             this.startPollingLed();
         }
 
-        // Start polling for UART memory addresses
         if (this.address >= 0x10000040 && this.address <= 0x10000048) {
             this.startPollingUart();
         }
     }
 
-    // Start polling memory addresses related to 7-segment display
+    // polling memory addresses for 7-segment display
     startPolling7Segment() {
         this.previousValues = {
             0x10000020: null,
@@ -58,7 +57,6 @@ class MemoryWord {
             0x1000002C: null
         };
 
-        // Poll every 100ms
         setInterval(() => this.checkAndUpdate7Segment(), 100);
     }
 
@@ -76,7 +74,7 @@ class MemoryWord {
 
     // Update the 7-segment display based on the changed value
     updateSevenSegment(address, newValue) {
-        const valueToDisplay = newValue & 0xFF;  // Extract the least significant byte
+        const valueToDisplay = newValue & 0xFF; 
 
         switch (address) {
             case 0x10000020:
@@ -103,7 +101,6 @@ class MemoryWord {
     startPollingLed() {
         this.previousLedValue = this.parent.getContent(0x10000030);
 
-        // Poll every 100ms for LED memory address
         setInterval(() => this.checkAndUpdateLed(), 100);
     }
 
@@ -118,10 +115,10 @@ class MemoryWord {
 
     updateLed(newLedValue) {
         console.log("Updating LED display with value:", newLedValue.toString(2).padStart(8, '0'));
-        LedDisplay.update(newLedValue);  // Call the LedDisplay's update method
+        LedDisplay.update(newLedValue); 
     }
 
-    // Start polling for UART memory registers
+    // polling for UART memory registers
     startPollingUart() {
         this.previousUartValues = {
             0x10000040: null, // Data register
@@ -129,7 +126,6 @@ class MemoryWord {
             0x10000048: null  // Control register
         };
 
-        // Poll every 100ms
         setInterval(() => this.checkAndUpdateUart(), 1);
     }
 
@@ -146,7 +142,7 @@ class MemoryWord {
                 // If writing to data register, display the transmitted char
                 if (this.address === 0x10000040 && window.uart) {
                     const char = String.fromCharCode(newValue & 0xFF);
-                    window.uartInterface.receiveChar(char); // Update the UART UI
+                    window.uartInterface.receiveChar(char); 
                 }
             }
         }
@@ -206,7 +202,6 @@ class MemoryWord {
 }
 
 // MemorySystem class to integrate UART with the memory subsystem
-// MemorySystem class to integrate UART with the memory subsystem
 class MemorySystem {
     constructor() {
         this.memory = {}; // Main memory storage
@@ -214,7 +209,7 @@ class MemorySystem {
         this.uart = null; // UART will be connected from uart.js
     }
     
-    // Connect UART to the memory system - called from uart.js
+    // Connect UART to the memory system
     connectUart(uart) {
         this.uart = uart;
         console.log('UART connected to memory system');
@@ -255,7 +250,7 @@ class MemorySystem {
         this.radix = radix;
     }
     
-    // Clear all memory contents (preserve UART state)
+    // Clear all memory contents
     clearMemory() {
         this.memory = {};
     }
@@ -329,5 +324,4 @@ class MemoryCell {
     }
 }
 
-// Initialize the memory system globally
 window.memorySystem = new MemorySystem();
