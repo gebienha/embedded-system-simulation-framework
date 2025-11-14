@@ -6,9 +6,9 @@ It provides a modernized web interface, new editing capabilities, and additional
 
 **Spim** a simulator that runs MIPS32 assembly programs and provides a simple debugger and OS services.
 
-**JsSpim** extended Spim by compiling it to WebAssembly (via Emscripten) and creating an interactive web-based environment.
+**JsSpim** extended Spim by compiling it to WebAssembly (via Emscripten), creating an interactive web-based environment, and adding some features.
 
-**This simulator** builds further on **JsSpim**, focusing on enhanced usability, visualization, and educational tools.
+**This simulator** builds further on **JsSpim**, focusing on enhanced usability, visualization, and educational tools, especially for OS course.
 
 ---
 
@@ -16,22 +16,11 @@ It provides a modernized web interface, new editing capabilities, and additional
 >
 > *Spim* implements almost the entire MIPS32 assembler-extended instruction set. (It omits most floating point comparisons and rounding modes and the memory system page tables.) The MIPS architecture has several variants that differ in various ways (e.g., the MIPS64 architecture supports 64-bit integers and addresses), which means that *Spim* will not run programs for all MIPS processors.
 
-## New Features in WebMIPS
+## New Features Implemented
 
 ### User Interface Improvements
-- **Dark Theme Mode**  
-  Provides a sleek and eye-friendly dark mode for long coding sessions.
-  
-- **Aligned Panel Layouts**  
-  The UI grid has been refined to align all panels neatly:
-  - Code editor  
-  - Register view  
-  - Data and stack panels  
-  - 7-segment and LED displays  
-  - UART interface  
-
-- **Refined CSS Grid Layout**  
-  Adjusted element sizes and spacing for a cleaner, more organized interface.
+- Dark Theme Mode
+  Provides a sleek and eye-friendly dark mode for long coding sessions
 
 ---
 
@@ -40,7 +29,7 @@ It provides a modernized web interface, new editing capabilities, and additional
   - Syntax highlighting for MIPS assembly
   - Line numbering and auto-indentation
   - A better, more interactive editing experience directly in the browser
-
+    
 ---
 
 ### Peripheral Simulation
@@ -71,13 +60,32 @@ It provides a modernized web interface, new editing capabilities, and additional
 - Use the range slider to **control the execution speed**
 - **Highlight** on changed registers, data segment, and stack
 - **Radix** support for all values
+- **7-Segment** and **LED** features for simulation
+- **UART** interface
+
+---
 
 ## Built With
 
 - [Spim](http://spimsimulator.sourceforge.net/) - The original simulator written in C++
-- [JsSpim](https://github.com/ShawnZhong/JsSpim)
+- [JsSpim](https://github.com/ShawnZhong/JsSpim) - The web-based extended version of Spim by Shawn Zhong
 - [Emscripten](https://emscripten.org/) - Toolchain to compile C++ source code to WebAssembly using the LLVM IR.
 - [Bootstrap](https://getbootstrap.com/)  - Using the CSS library to build the UI
 - [highlight.js](https://highlightjs.org/) - For highlighting the source code
-- [CodeMirror] - In-browser code eitor
+- [CodeMirror](https://codemirror.net/) - In-browser code eitor
 
+---
+
+## How to Launch the Simulator
+After downloading the repository, you can launch the simulator in two ways—both using Visual Studio Code (VSCode). Before starting, make sure the *`Live Server`* extension is installed.
+**Option 1**: Manual Launch via VSCode
+1. Open the simulator folder in VSCode
+2. Open the `index.html` file
+3. Start the server using one of the following methods:
+   - Click **Go Live** in the bottom-right corner of VSCode
+   - Right-click anywhere in the editor and select **Open with Live Server**
+   - Use the keyboard shortcut: `Alt+L`, then `Alt+O`
+
+**Option 2**: Automatic Launch via Script
+1. Navigate to the simulator folder in your file explorer
+2. Double-click `start_server.bat` to launch the simulator automatically. This way, there is no need to open VSCode manually.
