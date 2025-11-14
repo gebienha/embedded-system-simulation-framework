@@ -1,5 +1,5 @@
 const SevenSegmentDisplay = {
-    // Define standard segment patterns for hex values
+    // segment patterns for hex values
     patterns: {
         0x00: [0,0,0,0,0,0,0], // blank
         0x3F: [1,1,1,1,1,1,0], // 0
@@ -41,14 +41,14 @@ const SevenSegmentDisplay = {
     },
 
     _updateDisplay(displayClass, value) {
-        // Get the display element
+        // display element
         const display = document.querySelector(`.${displayClass}`);
         if (!display) {
             console.error(`Display element .${displayClass} not found!`);
             return;
         }
         
-        // Get pattern for this value or use blank if not found
+        // pattern for the value or use blank if not found
         const byteValue = value & 0xFF;
         const pattern = this.patterns[byteValue] || this.patterns[0x00];
         
@@ -81,28 +81,7 @@ const SevenSegmentDisplay = {
         this.updateMidLeft(values[1]);
         this.updateMidRight(values[2]);
         this.updateRight(values[3]);
-    },
-
-    // updateAll(values) {
-    //     console.log("updateAll called with values:", values);
-    //     if (values.length !== 4) {
-    //         console.error("Expected 4 values for updateAll");
-    //         return;
-    //     }
-        
-    //     // Update each segment display with the provided values
-    //     this.updateLeft(values[0]);
-    //     this.updateMidLeft(values[1]);
-    //     this.updateMidRight(values[2]);
-    //     this.updateRight(values[3]);
-    
-    //     // After a delay, reset the display
-    //     setTimeout(() => {
-    //         this.updateAll([0, 0, 0, 0]);  // Clear the display
-    //         console.log("Displays cleared");
-    //     }, 2000);  // Wait for 2 seconds before clearing
-    // },
-    
+    },    
     
     init() {
         console.log("Initializing Seven Segment Display");
@@ -122,7 +101,6 @@ const SevenSegmentDisplay = {
     }
 };
 
-// Initialize when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM loaded, initializing seven-segment display");
     SevenSegmentDisplay.init();

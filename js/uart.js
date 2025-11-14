@@ -111,12 +111,10 @@ class UART {
 
 
     writeUart(address, value) {
-        // Writing to data register = transmit character
         if (address === 0x10000040) {
             const char = String.fromCharCode(value & 0xFF);
             this.transmitChar(char);
             
-            // EDSim51-like behavior: TX becomes ready immediately
             this.uartMemory[0x10000044] |= this.STATUS_TX_READY;
             this.uartMemory[0x10000044] &= ~this.STATUS_TX_BUSY;
             
@@ -139,7 +137,6 @@ class UART {
         this.txDisplay.innerHTML += `[${timestamp}] TX: ${this.escapeHtml(char)}\n`;
         this.txDisplay.scrollTop = this.txDisplay.scrollHeight;
         
-        // Visual feedback
         this.txStatus.textContent = 'Transmitting...';
         this.txIndicator.classList.add('active');
         
@@ -152,7 +149,6 @@ class UART {
     receiveChar(char) {
         if (typeof char !== 'string' || char.length !== 1) return false;
         
-        // Visual feedback first
         if (this.rxDisplay) {
             const timestamp = new Date().toLocaleTimeString();
             this.rxDisplay.innerHTML += `[${timestamp}] RX: ${this.escapeHtml(char)}\n`;
@@ -162,7 +158,7 @@ class UART {
         this.rxIndicator.classList.add('active');
         this.rxStatus.textContent = 'Data Available';
         
-        // If RX data is already available and not read, buffer it
+        // If RX data is already available and not read, buffer
         if (this.uartMemory[0x10000044] & this.STATUS_RX_DATA_AVAILABLE) {
             this.rxBuffer.push(char);
             setTimeout(() => {
@@ -194,7 +190,7 @@ class UART {
             if (index < str.length) {
                 this.receiveChar(str[index]);
                 index++;
-                setTimeout(sendNextChar, 100); // 100ms between characters
+                setTimeout(sendNextChar, 100);
             }
         };
         
@@ -226,15 +222,12 @@ class UART {
     }
 }
 
-// Create and initialize UART instance
 const uart = new UART();
 
-// Send welcome message after initialization
 setTimeout(() => {
     uart.receiveString("UART Ready!");
 }, 2000);
 
-// Expose UART interface globally
 window.uartInterface = {
     readUart: addr => uart.readUart(addr),
     writeUart: (addr, val) => uart.writeUart(addr, val),

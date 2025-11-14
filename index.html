@@ -52,7 +52,7 @@
 
 <nav class="navbar navbar-light bg-light" id="toolbar">
     <div class="form-inline">
-        <div>Please choose a <a href="https://github.com/gebienha/mips-simulator-version-2/tree/main/Tests" target="_blank">MIPS
+        <div>Please choose a <a href="https://github.com/gebienha/embedded-system-simulation-framework/tree/main/Tests" target="_blank">MIPS
             assembly file</a>: &nbsp
         </div>
         <div>
@@ -120,22 +120,6 @@
     </div>
 </div>
 
-    <!-- <div class="card-body">
-        <h6>Special Registers</h6>
-        <pre id="special-int-regs" class="reg-lines"></pre>
-        <h6>General Registers</h6>
-        <pre id="general-regs" class="reg-lines"></pre>
-        <h6>Special Float Registers</h6>
-        <pre id="special-float-regs" class="reg-lines"></pre>
-        <h6>Single Precision</h6>
-        <pre id="float-regs" class="reg-lines"></pre>
-        <h6>Double Precision</h6>
-        <pre id="double-regs" class="reg-lines"></pre>
-    </div>
-</div> -->
-
-
-
 <div id="text-panel" class="card">
     <div class="card-header">
         <h5 class="float-left">Text Segment</h5>
@@ -201,7 +185,7 @@
         </div>
     </div>
     <div class="card-body">
-         <!-- Added input for file name -->
+         <!-- input for file name -->
         <div class="form-group">
             <label for="filename-input">File Name:</label>
             <div class="d-flex align-items-center">
@@ -219,40 +203,27 @@
                 theme: 'eclipse',
             });
 
-            // Update the current file name display beside the input
+            // Update the current file name display
             function updateCurrentFileName(filename) {
                 const currentFileNameElement = document.getElementById('current-filename');
                 currentFileNameElement.textContent = `Current File: ${filename}`;
             }
         
-             // Add event listener for the assemble button
+             // event listener for the assemble button
              document.getElementById('assemble-button').addEventListener('click', function() {
-                // Get the code from the editor
                 const code = editor.getValue();
-                
-                // Get the file name from the input field
-                const filename = document.getElementById('filename-input').value; // Default name if not entered
-
-                // Create a file object (similar to what the file uploader would create)
+                const filename = document.getElementById('filename-input').value; 
                 const file = new File([code], filename, {
                     type: "text/plain",
                 });
-                
-                // Call the main function with this file to process it
-                // This assumes your main() function handles file uploads
+            
                 main(file);
-                
-                // Log action for debugging
-                console.log('Code assembled and saved to input.s');
             });
 
-            // Add event listener for the assemble button
+            // event listener for the save button
             document.getElementById('save-button').addEventListener('click', function() {
-                // Get the file name from the input field
-                const filename = document.getElementById('filename-input').value; // Default name if not entered
+                const filename = document.getElementById('filename-input').value; 
                 saveFile(filename)
-                // Log action for debugging
-                console.log('Code assembled and saved');
             });
         </script>
     </div>
@@ -434,12 +405,6 @@
                     <span id="rx-status">Idle</span>
                 </div>
             </div>
-        </div>
-        
-        <div class="uart-badges">
-            <div class="uart-badge">8-N-1</div>
-            <div class="uart-badge">Address: 0x10000040</div>
-            <div class="uart-badge">IRQ: 4</div>
         </div>
     </div>
 </div>

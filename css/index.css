@@ -113,13 +113,11 @@ pre {
     margin-bottom: 0;
 }
 
-/* New CSS for the CodeMirror editor */
 #editor-panel {
     grid-area: editor;
     max-height: 700px;
 }
 
-/* Make sure the CodeMirror instance takes up the full available space */
 .CodeMirror {
     height: 100% !important;
     width: 100% !important;
@@ -147,7 +145,7 @@ pre {
 
 #seven-segment-panel {
     grid-area: seven-segment;
-    height: 290px; /* Same height as #stack-panel */
+    height: 290px;
     display: flex;
     flex-direction: column;
 }
@@ -170,10 +168,10 @@ pre {
 }
 
 .seven-segment div {
-    position: absolute; /* <-- This is critical */
+    position: absolute; 
     z-index: 1;
     border: 1px solid #ccc;
-    background-color: #e0e0e0; /* light grey = segment is off */
+    background-color: #e0e0e0; 
     border-radius: 5px;
     transition: background-color 0.3s ease;
 }
@@ -257,7 +255,7 @@ pre {
 /* LED Display Panel */
 #led-panel {
     grid-area: led-display;
-    height: 290px; /* Same height as seven-segment-panel */
+    height: 290px; 
     display: flex;
     flex-direction: column;
 }
@@ -274,17 +272,16 @@ pre {
 }
 
 .led {
-    width: 70px;     /* Increased from 60px */
-    height: 70px;    /* Increased from 60px */
-    background-color: #e0e0e0; /* OFF state: light grey */
-    border: 3px solid #ccc;    /* Slightly thicker border */
+    width: 70px;    
+    height: 70px;    
+    background-color: #e0e0e0; 
+    border: 3px solid #ccc;    
     box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.2);
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     margin: 10px;
     border-radius: 50%;
 }
 
-/* ON states with amplified glow effects */
 #led7.led-on {
     background-color: #007bff;
     box-shadow: 0 0 20px #007bff;
@@ -346,7 +343,6 @@ pre {
     color: white;
 }
 
-/* UART Interface Styles */
 #uart-interface {
     grid-area: uart;
 }
