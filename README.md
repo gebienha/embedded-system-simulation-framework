@@ -72,7 +72,7 @@ It provides a modernized web interface, new editing capabilities, and additional
 - [Emscripten](https://emscripten.org/) - Toolchain to compile C++ source code to WebAssembly using the LLVM IR.
 - [Bootstrap](https://getbootstrap.com/)  - Using the CSS library to build the UI
 - [highlight.js](https://highlightjs.org/) - For highlighting the source code
-- [CodeMirror](https://codemirror.net/) - In-browser code eitor
+- [CodeMirror](https://codemirror.net/) - In-browser code editor
 
 ---
 
